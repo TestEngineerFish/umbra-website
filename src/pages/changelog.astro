@@ -1,0 +1,38 @@
+---
+// 更新日志：数据在 src/data/changelog.ts。
+import Base from '../layouts/Base.astro';
+import { zh as t } from '../i18n/zh';
+import { releases } from '../data/changelog';
+
+const fmt = (d: string) => { const [y, m, day] = d.split('-'); return `${y} 年 ${+m} 月 ${+day} 日`; };
+---
+<Base title={t.changelog.title} description={t.changelog.lead} current="/changelog/">
+  <div class="wrap page-head">
+    <h1>{t.changelog.title}</h1>
+    <p class="lead">{t.changelog.lead}</p>
+  </div>
+  <ol class="wrap log">
+    {releases.map((r) => (
+      <li>
+        <time datetime={r.date}>{fmt(r.date)}</time>
+        <div class="body">
+          <h2>{r.title}</h2>
+          <p class="apps">{r.apps.map((a) => <span>{a}</span>)}</p>
+          <ul>{r.items.map((i) => <li>{i}</li>)}</ul>
+        </div>
+      </li>
+    ))}
+  </ol>
+</Base>
+
+<style>
+  .log { list-style: none; margin-bottom: 12vh; display: flex; flex-direction: column; }
+  .log > li { display: grid; grid-template-columns: 160px minmax(0, 1fr); gap: 24px; padding: 28px 0; border-top: 1px solid var(--border); }
+  time { font-family: var(--font-mono); font-size: 13px; color: var(--muted); padding-top: 4px; }
+  .body { display: flex; flex-direction: column; gap: 10px; }
+  .body h2 { font-size: 22px; }
+  .apps { display: flex; gap: 6px; flex-wrap: wrap; }
+  .apps span { font-size: 12px; padding: 2px 9px; border-radius: 999px; background: var(--chip); color: var(--muted); }
+  .body ul { margin: 0; padding-left: 1.2em; display: flex; flex-direction: column; gap: 6px; color: var(--text); }
+  @media (max-width: 640px) { .log > li { grid-template-columns: minmax(0, 1fr); gap: 8px; } }
+</style>

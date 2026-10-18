@@ -1,0 +1,28 @@
+{
+  "name": "umbra-web",
+  "private": true,
+  "type": "module",
+  "version": "0.1.0",
+  "scripts": {
+    "dev": "astro dev",
+    "build": "astro build",
+    "preview": "astro preview",
+    "check": "astro check",
+    "test": "vitest run",
+    "verify": "astro check && vitest run && astro build && node scripts/check-dist.mjs",
+    "snap": "node scripts/snap.mjs",
+    "tokens": "node scripts/sync-tokens.mjs"
+  },
+  "dependencies": {
+    "astro": "5.18.2"
+  },
+  "devDependencies": {
+    "@astrojs/check": "0.9.4",
+    "@emnapi/core": "1.11.3",
+    "@emnapi/runtime": "1.7.1",
+    "@types/node": "22.20.5",
+    "playwright-core": "1.56.1",
+    "typescript": "5.9.3",
+    "vitest": "3.2.7"
+  }
+}

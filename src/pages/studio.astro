@@ -1,0 +1,26 @@
+---
+// Umbra Studio 介绍页。
+import Base from '../layouts/Base.astro';
+import Shot from '../components/Shot.astro';
+import { zh as t } from '../i18n/zh';
+
+const S = t.studio;
+---
+<Base title="Umbra Studio" description={S.lead} current="/studio/">
+  <div class="wrap page-head">
+    <div class="eyebrow">{S.eyebrow}</div>
+    <h1 class="pre-line">{S.title}</h1>
+    <p class="lead">{S.lead}</p>
+    <div><a class="btn btn-primary" href={S.cta.href}>{S.cta.label}</a></div>
+  </div>
+  <div class="wrap"><Shot name={S.shot} alt="Umbra Studio 界面" eager /></div>
+  <div class="wrap points">
+    {S.points.map((p) => <div><h2>{p.title}</h2><p class="muted">{p.body}</p></div>)}
+  </div>
+</Base>
+
+<style>
+  .points { margin: 9vh auto 12vh; display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 250px), 1fr)); gap: 32px; }
+  .points div { display: flex; flex-direction: column; gap: 8px; }
+  .points h2 { font-size: 20px; }
+</style>

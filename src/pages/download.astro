@@ -1,0 +1,84 @@
+---
+// 下载页：四张卡；访客系统那张排第一并高亮（脚本只改顺序和高亮，没脚本时按默认顺序，照样能用）。
+// 地址在 src/data/site.ts：url 空 = 「内测中」，available=false = 「即将推出」。
+import Base from '../layouts/Base.astro';
+import { zh as t } from '../i18n/zh';
+import { site } from '../data/site';
+
+const D = t.download;
+const cards = D.items.map((d) => {
+  const cfg = site.downloads[d.key as keyof typeof site.downloads];
+  const state = !cfg.available ? 'soon' : cfg.url ? 'ready' : 'pending';
+  return { ...d, cfg, state };
+});
+---
+<Base title={D.title} description={D.lead} current="/download/">
+  <div class="wrap page-head">
+    <h1>{D.title}</h1>
+    <p class="lead">{D.lead}</p>
+  </div>
+  <div class="wrap">
+    <ul class="cards" id="cards">
+      {cards.map((c) => (
+        <li class:list={['card', c.state]} data-key={c.key}>
+          <div class="top">
+            <span class="here" hidden>{D.detected}</span>
+            <h2>{c.name}</h2>
+            <p class="req"><span class="sr">{D.requirementLabel}：</span>{c.req}</p>
+            {c.cfg.version && <p class="ver">v{c.cfg.version}</p>}
+          </div>
+          {c.state === 'ready' && <a class="btn btn-primary" href={c.cfg.url}>{c.action}</a>}
+          {c.state === 'pending' && <span class="badge">{D.pending}</span>}
+          {c.state === 'soon' && <span class="badge mute">{D.soon}</span>}
+        </li>
+      ))}
+    </ul>
+    {cards.some((c) => c.state === 'pending') && <p class="note">{D.pendingNote}</p>}
+
+    <section class="more">
+      <div>
+        <h2>{D.studio.title}</h2>
+        <p class="muted">{D.studio.body}</p>
+      </div>
+      <a class="link-more" href="/studio/">{D.studio.link} →</a>
+    </section>
+
+    <section class="contact">
+      <h2>{D.contactTitle}</h2>
+      <p class="muted">{D.contactBody}</p>
+      <p class="mail">{site.contactEmail || '【联系邮箱待填】'}</p>
+    </section>
+  </div>
+</Base>
+
+<script>
+  import { detectPlatform } from '../lib/platform';
+
+  const p = detectPlatform(navigator.userAgent, navigator.maxTouchPoints);
+  const list = document.getElementById('cards');
+  const card = list?.querySelector<HTMLElement>(`[data-key="${p}"]`);
+  if (list && card) {
+    card.classList.add('mine');
+    card.querySelector<HTMLElement>('.here')!.hidden = false;
+    list.prepend(card);
+  }
+</script>
+
+<style>
+  .cards { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 240px), 1fr)); gap: 16px; }
+  .card { display: flex; flex-direction: column; justify-content: space-between; gap: 28px; padding: 24px; border-radius: 16px; background: var(--card); border: 1px solid var(--border); min-height: 210px; }
+  .card.mine { border-color: var(--orange); box-shadow: 0 0 0 3px var(--orange-soft); }
+  .card.soon { opacity: .6; }
+  .top { display: flex; flex-direction: column; gap: 6px; }
+  .here { align-self: flex-start; font-size: 12px; font-weight: 600; color: var(--orange-text); background: var(--orange-soft); border-radius: 999px; padding: 2px 10px; }
+  .card h2 { font-size: 24px; }
+  .req, .ver { font-size: 14px; color: var(--muted); }
+  .sr { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); }
+  .badge { align-self: flex-start; font-size: 13.5px; font-weight: 600; padding: 8px 16px; border-radius: 999px; background: var(--chip); color: var(--text); }
+  .badge.mute { color: var(--muted); }
+  .note { margin-top: 14px; font-size: 14px; color: var(--muted); }
+  .more { margin-top: 8vh; padding: 28px; border-radius: 16px; background: var(--rail); border: 1px solid var(--border-soft); display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 16px; }
+  .more h2, .contact h2 { font-size: 22px; margin-bottom: 4px; }
+  .contact { margin: 6vh 0 10vh; display: flex; flex-direction: column; gap: 6px; }
+  .mail { font-family: var(--font-mono); font-size: 15px; user-select: all; }
+</style>

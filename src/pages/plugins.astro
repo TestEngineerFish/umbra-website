@@ -1,0 +1,76 @@
+---
+// 插件与主题：构建时从服务端公开接口取一次（GET /plugins/catalog、?type=theme），取不到用离线清单。
+// 这是只读展示页；安装、购买在客户端里做（官网不碰账号与支付）。
+import Base from '../layouts/Base.astro';
+import { zh as t } from '../i18n/zh';
+import { site } from '../data/site';
+import { fetchJson, normalizePlugins, normalizeThemes } from '../lib/plugins';
+import snapshot from '../data/plugins-snapshot.json';
+
+const P = t.plugins;
+const [rawP, rawT] = await Promise.all([
+  fetchJson(`${site.apiBase}/plugins/catalog`),
+  fetchJson(`${site.apiBase}/plugins/catalog?type=theme`),
+]);
+const live = rawP !== null;
+const plugins = normalizePlugins(rawP ?? snapshot);
+const themes = normalizeThemes(rawT ?? { plugins: snapshot.themes });
+const price = (n: number, builtin: boolean) => (builtin ? P.builtin : n === 0 ? P.free : `${n} ${P.priceUnit}`);
+---
+<Base title={P.title} description={P.lead} current="/plugins/">
+  <div class="wrap page-head">
+    <h1>{P.title}</h1>
+    <p class="lead">{P.lead}</p>
+  </div>
+
+  <section class="wrap block">
+    <h2>{P.pluginsTitle}</h2>
+    <ul class="list">
+      {plugins.map((x) => (
+        <li class="item">
+          <div class="row"><h3>{x.name}</h3><span class="price">{price(x.price, x.builtin)}</span></div>
+          <p class="muted">{x.brief}</p>
+          <p class="meta">
+            {x.formats.length > 0 && <span>{P.formats} {x.formats.join(' ')}</span>}
+            <span>{P.by} {x.author}</span>
+            {x.version && <span>v{x.version}</span>}
+          </p>
+        </li>
+      ))}
+    </ul>
+  </section>
+
+  <section class="wrap block">
+    <h2>{P.themesTitle}</h2>
+    {themes.length === 0
+      ? <p class="empty">{P.emptyThemes}</p>
+      : <ul class="list">
+          {themes.map((x) => (
+            <li class="item">
+              <div class="sw" aria-hidden="true">
+                {[x.preview.light, x.preview.dark].map((s) => s && <span style={`background:${s.bg ?? 'transparent'}`}><i style={`background:${s.card ?? 'transparent'}`}></i><b style={`background:${s.accent ?? 'transparent'}`}></b></span>)}
+              </div>
+              <div class="row"><h3>{x.name}</h3><span class="price">{price(x.price, false)}</span></div>
+              <p class="muted">{x.brief}</p>
+            </li>
+          ))}
+        </ul>}
+  </section>
+  <p class="wrap note">{live ? P.snapshotNote : P.snapshotFallback}</p>
+</Base>
+
+<style>
+  .block { display: flex; flex-direction: column; gap: 18px; margin-bottom: 8vh; }
+  .block h2 { font-size: 26px; }
+  .list { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 300px), 1fr)); gap: 16px; }
+  .item { padding: 22px; border-radius: 16px; background: var(--card); border: 1px solid var(--border); display: flex; flex-direction: column; gap: 8px; }
+  .row { display: flex; justify-content: space-between; gap: 12px; align-items: baseline; }
+  .price { font-size: 13px; font-weight: 600; color: var(--orange-text); white-space: nowrap; }
+  .meta { display: flex; flex-wrap: wrap; gap: 4px 14px; font-size: 12.5px; color: var(--faint); font-family: var(--font-mono); }
+  .empty { padding: 28px; border-radius: 16px; border: 1px dashed var(--border); color: var(--muted); }
+  .sw { display: flex; gap: 8px; margin-bottom: 4px; }
+  .sw span { width: 64px; height: 40px; border-radius: 9px; border: 1px solid var(--border); position: relative; overflow: hidden; }
+  .sw i { position: absolute; left: 8px; right: 8px; top: 8px; bottom: 8px; border-radius: 5px; }
+  .sw b { position: absolute; right: 12px; bottom: 12px; width: 10px; height: 10px; border-radius: 50%; }
+  .note { margin-bottom: 12vh; font-size: 13.5px; color: var(--muted); }
+</style>

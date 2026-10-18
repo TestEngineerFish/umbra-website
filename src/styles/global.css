@@ -1,0 +1,66 @@
+/* 全站基础。颜色只用 tokens.css 里的变量（来自 umbra-tokens.json），不在这里写新的色值。
+   官网额外需要的只有尺寸与字号，客户端是 12.5px 正文的工具界面，官网是读物，所以字号整体放大一档。 */
+@import './tokens.css';
+
+:root {
+  --gutter: max(16px, env(safe-area-inset-left, 0px));
+  --gutter-r: max(16px, env(safe-area-inset-right, 0px));
+  --maxw: 1180px;
+  --header-h: 60px;
+  --fs-body: 16px;
+  --fs-lead: clamp(17px, 1.6vw, 20px);
+  --fs-h1: clamp(38px, 6vw, 72px);
+  --fs-h2: clamp(28px, 3.8vw, 44px);
+  --fs-h3: 19px;
+  --ease-out: cubic-bezier(.2, .7, .2, 1);
+}
+
+*, *::before, *::after { box-sizing: border-box; }
+html { -webkit-text-size-adjust: 100%; scroll-padding-top: calc(var(--header-h) + 16px); }
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--text);
+  font-family: var(--font-sans);
+  font-size: var(--fs-body);
+  line-height: 1.7;
+  -webkit-font-smoothing: antialiased;
+}
+img { max-width: 100%; height: auto; display: block; }
+a { color: inherit; }
+h1, h2, h3 { margin: 0; text-wrap: balance; letter-spacing: -0.01em; line-height: 1.15; }
+h1 { font-size: var(--fs-h1); font-weight: 700; line-height: 1.08; }
+h2 { font-size: var(--fs-h2); font-weight: 700; }
+h3 { font-size: var(--fs-h3); font-weight: 650; line-height: 1.4; }
+p { margin: 0; }
+:focus-visible { outline: 2px solid var(--orange); outline-offset: 3px; border-radius: 4px; }
+[hidden] { display: none !important; }
+
+.wrap { width: 100%; max-width: var(--maxw); margin-inline: auto; padding-left: var(--gutter); padding-right: var(--gutter-r); }
+.eyebrow { font-family: var(--font-mono); font-size: 12px; letter-spacing: .08em; color: var(--orange-text); text-transform: uppercase; }
+.lead { font-size: var(--fs-lead); line-height: 1.7; color: var(--muted); max-width: 40rem; }
+.muted { color: var(--muted); }
+.pre-line { white-space: pre-line; }
+
+.btn {
+  display: inline-flex; align-items: center; justify-content: center; gap: 8px;
+  height: 44px; padding: 0 20px; border-radius: 999px; border: 1px solid transparent;
+  font: inherit; font-size: 15px; font-weight: 600; text-decoration: none; cursor: pointer;
+  transition: background-color .15s, border-color .15s;
+}
+.btn-primary { background: var(--orange); color: #fff; }
+.btn-primary:hover { background: var(--orange-deep); }
+.btn-ghost { background: transparent; color: var(--text); border-color: var(--border); }
+.btn-ghost:hover { background: var(--hover); }
+.link-more { color: var(--orange-text); text-decoration: none; font-weight: 600; font-size: 15px; }
+.link-more:hover { text-decoration: underline; }
+
+.page-head { padding-block: calc(var(--header-h) + 9vh) 6vh; display: flex; flex-direction: column; gap: 18px; }
+
+.skip { position: absolute; left: -9999px; top: 8px; z-index: 100; background: var(--card); color: var(--text); padding: 8px 14px; border-radius: 8px; }
+.skip:focus { left: 16px; }
+
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto !important; }
+  *, *::before, *::after { animation-duration: .01ms !important; transition-duration: .01ms !important; }
+}

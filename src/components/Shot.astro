@@ -1,0 +1,27 @@
+---
+// 截图：public/shots/ 里的图本身已带 macOS 窗口外框（透明背景），直接放、只加投影。
+// 没有图时画同比例的占位窗口，版面不跳。phone=true 是 iPhone 外框截图（竖图）。
+import { shotUrl } from '../lib/shots';
+import { zh as t } from '../i18n/zh';
+
+interface Props { name: string; alt: string; phone?: boolean; eager?: boolean }
+const { name, alt, phone = false, eager = false } = Astro.props;
+const src = shotUrl(name);
+const [w, h] = phone ? [788, 1600] : [1600, 939];
+---
+<figure class:list={['shot', { phone }]}>
+  {src
+    ? <img src={src} alt={alt} loading={eager ? 'eager' : 'lazy'} decoding="async" width={w} height={h} />
+    : <div class="ph" style={`aspect-ratio:${w}/${h}`}><span>{t.features.shotPending}</span></div>}
+</figure>
+
+<style>
+  .shot { margin: 0; }
+  img { width: 100%; height: auto; filter: drop-shadow(0 22px 40px rgba(31, 35, 32, .18)) drop-shadow(0 2px 6px rgba(31, 35, 32, .08)); }
+  .ph { display: grid; place-items: center; border-radius: 12px; border: 1px solid var(--border); background:
+      radial-gradient(120% 90% at 85% 0%, var(--orange-soft), transparent 60%),
+      repeating-linear-gradient(0deg, transparent 0 27px, var(--border-soft) 27px 28px), var(--rail); }
+  .ph span { font-size: 13px; color: var(--faint); font-family: var(--font-mono); }
+  .phone { width: 100%; max-width: 300px; }
+  .phone .ph { border-radius: 40px; border: 6px solid var(--nav); }
+</style>

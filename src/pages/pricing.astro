@@ -1,0 +1,91 @@
+---
+// 定价页：免费 / 会员两栏（会员带按月 / 按年切换）+ 积分能买什么 + 常见问题。
+// 数字在 src/data/site.ts（与服务端 membership.py 初值一致），格式化在 src/lib/price.ts。
+import Base from '../layouts/Base.astro';
+import { zh as t } from '../i18n/zh';
+import { site } from '../data/site';
+import { yuan, perMonthOfYear, yearSaving, discountLabel, bytesLabel } from '../lib/price';
+
+const T = t.pricing, p = site.pricing;
+const fill = (s: string) => s
+  .replace('{free}', bytesLabel(p.freeStorageBytes))
+  .replace('{trial}', String(p.trialDays))
+  .replace('{storage}', bytesLabel(p.memberStorageBytes))
+  .replace('{discount}', discountLabel(p.discountPct));
+---
+<Base title={T.title} description={T.lead} current="/pricing/">
+  <div class="wrap page-head">
+    <h1>{T.title}</h1>
+    <p class="lead">{T.lead}</p>
+  </div>
+
+  <div class="wrap plans">
+    <article class="plan">
+      <h2>{T.free.name}</h2>
+      <p class="price">{T.free.price}<span>{T.free.period}</span></p>
+      <ul>{T.free.points.map((x) => <li>{fill(x)}</li>)}</ul>
+    </article>
+
+    <article class="plan member">
+      <div class="head">
+        <h2>{T.member.name}</h2>
+        <div class="seg" role="radiogroup" aria-label="计费周期">
+          <input type="radio" name="cycle" id="cycle-m" value="m" checked />
+          <label for="cycle-m">{T.member.monthLabel}</label>
+          <input type="radio" name="cycle" id="cycle-y" value="y" />
+          <label for="cycle-y">{T.member.yearLabel}</label>
+        </div>
+      </div>
+      <p class="price m">{yuan(p.monthCents)}<span>/ 月</span></p>
+      <p class="price y">{yuan(p.yearCents)}<span>/ 年</span></p>
+      <p class="sub y">{T.member.perMonth.replace('{v}', yuan(perMonthOfYear(p.yearCents)))} · {T.member.save.replace('{v}', yuan(yearSaving(p.monthCents, p.yearCents)))}</p>
+      <ul>{T.member.points.map((x) => <li>{fill(x)}</li>)}</ul>
+    </article>
+  </div>
+  <p class="wrap note">{T.note}</p>
+
+  <section class="wrap credits">
+    <h2>{T.credits.title}</h2>
+    <div class="cgrid">
+      {T.credits.items.map((c) => <div><h3>{c.name}</h3><p class="muted">{c.body}</p></div>)}
+    </div>
+  </section>
+
+  <section class="wrap faq">
+    <h2>{T.faqTitle}</h2>
+    {T.faq.map((f) => <details><summary>{f.q}</summary><p>{f.a}</p></details>)}
+  </section>
+</Base>
+
+<style>
+  .plans { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 320px), 1fr)); gap: 18px; }
+  .plan { padding: 28px; border-radius: 18px; background: var(--card); border: 1px solid var(--border); display: flex; flex-direction: column; gap: 14px; }
+  .plan.member { border-color: var(--orange); box-shadow: 0 0 0 3px var(--orange-soft); }
+  .plan h2 { font-size: 22px; }
+  .head { display: flex; align-items: center; justify-content: space-between; gap: 12px; flex-wrap: wrap; }
+  .price { font-size: 44px; font-weight: 700; letter-spacing: -.02em; line-height: 1.1; font-variant-numeric: tabular-nums; }
+  .price span { font-size: 15px; font-weight: 400; color: var(--muted); margin-left: 8px; letter-spacing: 0; }
+  .sub { font-size: 14px; color: var(--orange-text); margin-top: -8px; }
+  .plan ul { list-style: none; margin: 6px 0 0; padding: 18px 0 0; border-top: 1px solid var(--border-soft); display: flex; flex-direction: column; gap: 10px; }
+  .plan li { padding-left: 22px; position: relative; font-size: 15px; }
+  .plan li::before { content: ''; position: absolute; left: 2px; top: .45em; width: 10px; height: 6px; border-left: 2px solid var(--orange); border-bottom: 2px solid var(--orange); transform: rotate(-45deg); }
+
+  .seg { display: inline-flex; padding: 3px; border-radius: 9px; background: var(--chip); }
+  .seg input { position: absolute; opacity: 0; pointer-events: none; }
+  .seg label { font-size: 13px; padding: 5px 13px; border-radius: 7px; cursor: pointer; color: var(--muted); }
+  .seg input:checked + label { background: var(--card); color: var(--text); box-shadow: 0 1px 3px rgba(0, 0, 0, .1); }
+  .seg input:focus-visible + label { outline: 2px solid var(--orange); outline-offset: 1px; }
+  .member .y { display: none; }
+  .member:has(#cycle-y:checked) .y { display: block; }
+  .member:has(#cycle-y:checked) .m { display: none; }
+
+  .note { margin-top: 14px; font-size: 13.5px; color: var(--muted); }
+  .credits { margin-top: 10vh; display: flex; flex-direction: column; gap: 20px; }
+  .cgrid { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 240px), 1fr)); gap: 24px; }
+  .cgrid div { display: flex; flex-direction: column; gap: 6px; padding-top: 16px; border-top: 2px solid var(--orange); }
+  .faq { margin: 10vh auto 12vh; display: flex; flex-direction: column; }
+  .faq h2 { margin-bottom: 14px; }
+  details { border-bottom: 1px solid var(--border); padding: 16px 0; }
+  summary { cursor: pointer; font-weight: 600; font-size: 16.5px; }
+  details p { margin-top: 10px; color: var(--muted); max-width: 46rem; }
+</style>

@@ -1,0 +1,40 @@
+---
+// 页脚：链接三组 + 版权 + 备案号。备案号没配置就不画（不放假号码），配上了按工信部 / 公安要求链到各自查询站。
+import { zh as t } from '../i18n/zh';
+import { site } from '../data/site';
+
+interface Props { variant?: 'ocean' | 'page' }
+const { variant = 'page' } = Astro.props;
+---
+<footer class:list={['ft', variant]}>
+  <div class="wrap ft-in">
+    <div class="groups">
+      {t.site.footer.groups.map((g) => (
+        <div class="group">
+          <h2>{g.title}</h2>
+          <ul>{g.links.map((l) => <li><a href={l.href}>{l.label}</a></li>)}</ul>
+        </div>
+      ))}
+    </div>
+    <div class="legal">
+      <span>{t.site.footer.copyright}</span>
+      {site.icp && <a href="https://beian.miit.gov.cn/" rel="noopener" target="_blank">{site.icp}</a>}
+      {site.police && <a href={`https://beian.mps.gov.cn/#/query/webSearch?code=${site.policeCode}`} rel="noopener" target="_blank">{site.police}</a>}
+      {site.contactEmail && <span>{site.contactEmail}</span>}
+    </div>
+  </div>
+</footer>
+
+<style>
+  .ft { border-top: 1px solid var(--border-soft); padding-block: 48px 36px; font-size: 13.5px; color: var(--muted); background: var(--bg); }
+  .ft.ocean { position: relative; z-index: 1; border-top-color: rgba(240, 168, 120, .14); background: transparent; color: rgba(237, 234, 227, .55); }
+  .ft-in { display: flex; flex-direction: column; gap: 32px; }
+  .groups { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 24px; }
+  .group h2 { font-size: 12px; font-weight: 600; letter-spacing: .06em; color: var(--faint); margin-bottom: 10px; }
+  .ocean .group h2 { color: rgba(237, 234, 227, .4); }
+  ul { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 6px; }
+  a { text-decoration: none; }
+  a:hover { color: var(--text); }
+  .ocean a:hover { color: #fff; }
+  .legal { display: flex; flex-wrap: wrap; gap: 8px 22px; font-size: 12.5px; }
+</style>

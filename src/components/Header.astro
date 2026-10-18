@@ -1,0 +1,58 @@
+---
+// 顶栏。variant=ocean：首页用，透明叠在日落海面上、白字；variant=page：其余页面，吸顶、毛玻璃底。
+// 手机上导航收进 <details>，不需要脚本。
+import { zh as t } from '../i18n/zh';
+import { site } from '../data/site';
+
+interface Props { variant?: 'ocean' | 'page'; current?: string }
+const { variant = 'page', current = '' } = Astro.props;
+const loginHref = site.accountUrl || '/download/';
+---
+<header class:list={['hd', variant]}>
+  <div class="hd-in">
+    <a class="mark" href="/" aria-label="Umbra 首页"><i aria-hidden="true"></i>{t.brand}</a>
+    <nav class="nav" aria-label="主导航">
+      {t.site.nav.map((n) => <a href={n.href} aria-current={current === n.href ? 'page' : undefined}>{n.label}</a>)}
+    </nav>
+    <a class="login" href={loginHref}>{t.site.login}</a>
+    <details class="menu">
+      <summary aria-label="打开导航"><span></span><span></span></summary>
+      <nav aria-label="主导航（手机）">
+        {t.site.nav.map((n) => <a href={n.href}>{n.label}</a>)}
+        <a href={loginHref}>{t.site.login}</a>
+      </nav>
+    </details>
+  </div>
+</header>
+
+<style>
+  .hd { position: absolute; inset: 0 0 auto; z-index: 20; padding-top: env(safe-area-inset-top, 0px); }
+  .hd.page { position: sticky; top: 0; background: color-mix(in srgb, var(--bg) 82%, transparent); backdrop-filter: saturate(1.4) blur(14px); -webkit-backdrop-filter: saturate(1.4) blur(14px); border-bottom: 1px solid var(--border-soft); }
+  .hd-in { max-width: var(--maxw); margin-inline: auto; height: var(--header-h); display: flex; align-items: center; gap: 28px; padding-left: var(--gutter); padding-right: var(--gutter-r); }
+  .mark { display: flex; align-items: center; gap: 9px; font-weight: 700; font-size: 19px; letter-spacing: .02em; text-decoration: none; }
+  .mark i { width: 18px; height: 18px; border-radius: 50%; background: radial-gradient(circle at 35% 35%, #ffb27a, var(--orange) 55%, var(--orange-deep)); box-shadow: 0 0 16px rgba(232, 89, 12, .55); }
+  .nav { display: flex; gap: 24px; margin-left: auto; }
+  .nav a { text-decoration: none; font-size: 14.5px; color: var(--muted); }
+  .nav a:hover, .nav a[aria-current='page'] { color: var(--text); }
+  .login { font-size: 13.5px; text-decoration: none; border: 1px solid var(--border); border-radius: 999px; padding: 6px 14px; }
+  .login:hover { background: var(--hover); }
+  .ocean .mark, .ocean .login { color: #fff; }
+  .ocean .nav a { color: rgba(255, 255, 255, .8); }
+  .ocean .nav a:hover { color: #fff; }
+  .ocean .login { border-color: rgba(255, 255, 255, .42); }
+  .ocean .login:hover { background: rgba(255, 255, 255, .12); }
+
+  .menu { display: none; position: relative; }
+  .menu summary { list-style: none; cursor: pointer; width: 40px; height: 40px; display: grid; place-content: center; gap: 6px; border-radius: 10px; }
+  .menu summary::-webkit-details-marker { display: none; }
+  .menu summary span { display: block; width: 20px; height: 1.5px; background: currentColor; }
+  .menu nav { position: absolute; right: 0; top: 46px; min-width: 180px; display: flex; flex-direction: column; padding: 8px; border-radius: 14px; background: var(--card); color: var(--text); border: 1px solid var(--border); box-shadow: 0 8px 24px rgba(0, 0, 0, .13); }
+  .menu nav a { padding: 10px 12px; border-radius: 8px; text-decoration: none; }
+  .menu nav a:hover { background: var(--hover); }
+  .ocean .menu summary { color: #fff; }
+
+  @media (max-width: 760px) {
+    .nav, .login { display: none; }
+    .menu { display: block; margin-left: auto; }
+  }
+</style>

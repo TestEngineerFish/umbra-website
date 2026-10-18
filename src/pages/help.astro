@@ -1,0 +1,51 @@
+---
+// 帮助：分组 FAQ + 联系方式（邮箱用可选中的文字 + 复制按钮，不依赖 mailto）。
+import Base from '../layouts/Base.astro';
+import { zh as t } from '../i18n/zh';
+import { site } from '../data/site';
+
+const H = t.help;
+const email = site.contactEmail;
+---
+<Base title={H.title} description={H.lead} current="/help/">
+  <div class="wrap page-head">
+    <h1>{H.title}</h1>
+    <p class="lead">{H.lead}</p>
+  </div>
+  <div class="wrap groups">
+    {H.groups.map((g) => (
+      <section>
+        <h2>{g.title}</h2>
+        {g.items.map((f) => <details><summary>{f.q}</summary><p>{f.a}</p></details>)}
+      </section>
+    ))}
+  </div>
+  <section class="wrap contact" id="contact">
+    <h2>{H.contactTitle}</h2>
+    <p class="muted">{H.contactBody}</p>
+    {email
+      ? <p class="mail"><span id="mail">{email}</span><button class="btn btn-ghost" type="button" id="copy" data-done={H.copied}>{H.copy}</button></p>
+      : <p class="mail">【联系邮箱待填】</p>}
+  </section>
+</Base>
+
+<script>
+  const btn = document.getElementById('copy');
+  btn?.addEventListener('click', async () => {
+    const text = document.getElementById('mail')?.textContent ?? '';
+    try { await navigator.clipboard.writeText(text); btn.textContent = btn.dataset.done ?? ''; }
+    catch { getSelection()?.selectAllChildren(document.getElementById('mail')!); }
+  });
+</script>
+
+<style>
+  .groups { display: flex; flex-direction: column; gap: 7vh; }
+  .groups h2 { font-size: 22px; margin-bottom: 8px; }
+  details { border-bottom: 1px solid var(--border); padding: 16px 0; }
+  summary { cursor: pointer; font-weight: 600; font-size: 16.5px; }
+  details p { margin-top: 10px; color: var(--muted); max-width: 46rem; }
+  .contact { margin: 10vh auto 12vh; display: flex; flex-direction: column; gap: 8px; }
+  .contact h2 { font-size: 22px; }
+  .mail { display: flex; align-items: center; gap: 14px; flex-wrap: wrap; font-family: var(--font-mono); font-size: 16px; }
+  .mail span { user-select: all; }
+</style>

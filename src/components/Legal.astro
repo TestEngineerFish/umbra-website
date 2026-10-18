@@ -1,0 +1,35 @@
+---
+// 法务页外壳：读 src/legal/<doc>.md（frontmatter：title / updated / draft）。
+// 文件还没写好时画一句「正在起草」，不让构建失败。
+import Base from '../layouts/Base.astro';
+import { zh as t } from '../i18n/zh';
+
+interface Props { doc: 'privacy' | 'terms'; fallbackTitle: string }
+const { doc, fallbackTitle } = Astro.props;
+const files = import.meta.glob<{ Content: any; frontmatter: { title?: string; updated?: string; draft?: boolean } }>('../legal/*.md', { eager: true });
+const file = files[`../legal/${doc}.md`];
+const fm = file?.frontmatter ?? {};
+const Content = file?.Content;
+const title = fm.title || fallbackTitle;
+---
+<Base title={title} current={`/${doc}/`}>
+  <article class="wrap page-head legal">
+    <h1>{title}</h1>
+    {fm.updated && <p class="muted">{t.legal.updated} {fm.updated}</p>}
+    {fm.draft !== false && <p class="draft">{t.legal.draftBanner}</p>}
+    <div class="md">{Content ? <Content /> : <p>正在起草。</p>}</div>
+  </article>
+</Base>
+
+<style>
+  .legal { max-width: 48rem; padding-bottom: 12vh; }
+  .draft { padding: 12px 16px; border-radius: 10px; background: var(--warning-soft); color: var(--warning-text); font-size: 14px; }
+  .md :global(h2) { font-size: 22px; margin: 2.2em 0 .6em; }
+  .md :global(h3) { font-size: 17px; margin: 1.6em 0 .4em; }
+  .md :global(p), .md :global(li) { font-size: 15.5px; line-height: 1.85; }
+  .md :global(p) { margin: .7em 0; }
+  .md :global(blockquote) { margin: 1em 0; padding: 4px 16px; border-left: 3px solid var(--orange); color: var(--muted); }
+  .md :global(table) { border-collapse: collapse; width: 100%; font-size: 14px; display: block; overflow-x: auto; }
+  .md :global(th), .md :global(td) { border: 1px solid var(--border); padding: 8px 10px; text-align: left; vertical-align: top; }
+  .md :global(th) { background: var(--rail); }
+</style>

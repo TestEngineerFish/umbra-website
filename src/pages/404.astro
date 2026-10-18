@@ -1,0 +1,16 @@
+---
+import Base from '../layouts/Base.astro';
+import { zh as t } from '../i18n/zh';
+
+const N = t.site.notFound;
+---
+<Base title={N.title}>
+  <div class="wrap page-head nf">
+    <div class="eyebrow">404 · −∞ m</div>
+    <h1>{N.title}</h1>
+    <p class="lead">{N.body}</p>
+    <div><a class="btn btn-primary" href="/">{N.back}</a></div>
+  </div>
+</Base>
+
+<style>.nf { min-height: 70vh; justify-content: center; }</style>

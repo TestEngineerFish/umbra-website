@@ -1,0 +1,23 @@
+---
+import Base from '../layouts/Base.astro';
+import { zh as t } from '../i18n/zh';
+import { site } from '../data/site';
+
+const A = t.about;
+---
+<Base title={A.title} description={A.lead} current="/about/">
+  <article class="wrap page-head prose">
+    <h1>{A.title}</h1>
+    <p class="lead">{A.lead}</p>
+    {A.body.map((p) => <p>{p}</p>)}
+    <h2>{A.contactTitle}</h2>
+    <p class="mail">{site.contactEmail || '【联系邮箱待填】'}</p>
+  </article>
+</Base>
+
+<style>
+  .prose { max-width: 46rem; padding-bottom: 12vh; }
+  .prose p { font-size: 17px; line-height: 1.85; }
+  .prose h2 { font-size: 22px; margin-top: 3vh; }
+  .mail { font-family: var(--font-mono); user-select: all; }
+</style>
