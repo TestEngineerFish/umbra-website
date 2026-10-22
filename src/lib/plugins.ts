@@ -1,5 +1,6 @@
 // 插件页的数据：构建时从服务端公开接口取（GET /plugins/catalog，不要凭证），取不到用离线清单。
 // normalize 是纯函数，测试见 tests/plugins.test.ts。
+import { brand } from '../brand';
 
 export interface PluginEntry {
   id: string;
@@ -30,6 +31,8 @@ export interface Swatch {
 }
 
 const str = (v: unknown): string => (typeof v === 'string' ? v : '');
+/** 官方插件的作者：服务端回的是内部代号 Umbra（或空），页面上显示对外品牌名。 */
+const author = (v: unknown): string => { const a = str(v); return !a || a === brand.codename ? brand.productName : a; };
 const num = (v: unknown): number => (typeof v === 'number' && Number.isFinite(v) && v >= 0 ? Math.round(v) : 0);
 /** 只放行 #rgb / #rrggbb / #rrggbbaa —— 色值要进 style 属性，别的一律丢掉。 */
 const color = (v: unknown): string | undefined => (typeof v === 'string' && /^#([0-9a-f]{3}|[0-9a-f]{6}|[0-9a-f]{8})$/i.test(v) ? v : undefined);
@@ -50,7 +53,7 @@ export function normalizePlugins(raw: unknown): PluginEntry[] {
     if (!id || !name) return [];
     return [{
       id, name,
-      author: str(o.author) || 'Umbra',
+      author: author(o.author),
       version: str(o.version),
       price: num(o.price),
       builtin: o.builtin === true || o.builtin === 1,
@@ -69,7 +72,7 @@ export function normalizeThemes(raw: unknown): ThemeEntry[] {
     const id = str(o.id), name = str(o.name);
     if (!id || !name) return [];
     const p = (o.preview && typeof o.preview === 'object' ? o.preview : {}) as Record<string, unknown>;
-    return [{ id, name, author: str(o.author) || 'Umbra', price: num(o.price), brief: str(o.brief), preview: { light: swatch(p.light), dark: swatch(p.dark) } }];
+    return [{ id, name, author: author(o.author), price: num(o.price), brief: str(o.brief), preview: { light: swatch(p.light), dark: swatch(p.dark) } }];
   });
 }
 

@@ -10,7 +10,7 @@ const loginHref = site.accountUrl || '/download/';
 ---
 <header class:list={['hd', variant]}>
   <div class="hd-in">
-    <a class="mark" href="/" aria-label="Umbra 首页"><i aria-hidden="true"></i>{t.brand}</a>
+    <a class="mark" href="/" aria-label={t.homeLabel}><i aria-hidden="true"></i>{t.brand}</a>
     <nav class="nav" aria-label="主导航">
       {t.site.nav.map((n) => <a href={n.href} aria-current={current === n.href ? 'page' : undefined}>{n.label}</a>)}
     </nav>
