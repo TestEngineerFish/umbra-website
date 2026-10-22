@@ -3,6 +3,7 @@
 // 文件还没写好时画一句「正在起草」，不让构建失败。
 import Base from '../layouts/Base.astro';
 import { zh as t } from '../i18n/zh';
+import { fillBrand } from '../brand';
 
 interface Props { doc: 'privacy' | 'terms'; fallbackTitle: string }
 const { doc, fallbackTitle } = Astro.props;
@@ -10,7 +11,7 @@ const files = import.meta.glob<{ Content: any; frontmatter: { title?: string; up
 const file = files[`../legal/${doc}.md`];
 const fm = file?.frontmatter ?? {};
 const Content = file?.Content;
-const title = fm.title || fallbackTitle;
+const title = fm.title ? fillBrand(fm.title) : fallbackTitle;
 ---
 <Base title={title} current={`/${doc}/`}>
   <article class="wrap page-head legal">

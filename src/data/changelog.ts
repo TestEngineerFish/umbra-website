@@ -2,6 +2,8 @@
 // 来源：doc/ 各设计文档的「已实现」状态行（2026-10-19 整理）。以后发布时往最上面加一条。
 // P4 再做自动生成（从各仓发布说明拉），见 doc/官网 草案 §五。
 
+import { brand } from '../brand';
+
 export interface Release {
   date: string;
   title: string;
@@ -34,7 +36,7 @@ export const releases: Release[] = [
     items: [
       '账号页新增会员面板：AI 额度按 5 小时和每周两档，用多少看百分比。',
       '商城：用积分买额度重置卡、加量包；会员买积分商品打折。',
-      'Umbra Studio 插件市场：插件可以买断，部分插件随会员赠送。',
+      `${brand.studioName} 插件市场：插件可以买断，部分插件随会员赠送。`,
     ],
   },
   {

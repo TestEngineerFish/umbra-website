@@ -2,13 +2,16 @@
 // 文案是占位稿：标语与各段措辞最终交 Claude Design 裁（见 doc/官网 草案 §九 W5）。
 // 写法约定：只写**已经上线**的能力；没做完的不写（例：Skill 能力模块未开工，所以没有它）。
 
+import { brand as B } from '../brand';
+
 export const zh = {
   lang: 'zh-CN',
-  brand: 'Umbra',
+  brand: B.productName,
+  homeLabel: `${B.productName}首页`,
 
   site: {
-    title: 'Umbra · 私人 AI 助手',
-    description: '你只管开口。记住、安排、执行、保管，Umbra 在你看不见的地方把事办完。电脑、手机、平板都是它的手。',
+    title: `${B.productName} · 私人 AI 助手`,
+    description: `你只管开口。记住、安排、执行、保管，${B.productName}在你看不见的地方把事办完。电脑、手机、平板都是它的手。`,
     nav: [
       { href: '/features/', label: '功能' },
       { href: '/download/', label: '下载' },
@@ -26,7 +29,7 @@ export const zh = {
             { href: '/features/', label: '全部功能' },
             { href: '/download/', label: '下载' },
             { href: '/pricing/', label: '会员与积分' },
-            { href: '/studio/', label: 'Umbra Studio' },
+            { href: '/studio/', label: B.studioName },
             { href: '/plugins/', label: '插件与主题' },
           ],
         },
@@ -46,7 +49,7 @@ export const zh = {
           ],
         },
       ],
-      copyright: '© 2026 Umbra',
+      copyright: `© 2026 ${B.productName}`,
     },
     notFound: { title: '这里什么都没有', body: '这个页面不存在，可能是链接写错了，或者它已经搬走了。', back: '回到首页' },
   },
@@ -59,11 +62,11 @@ export const zh = {
         id: 'surface',
         depth: 0,
         zone: '海平面',
-        eyebrow: 'Umbra · 私人 AI 助手',
+        eyebrow: `${B.productName} · 私人 AI 助手`,
         title: '说一句，\n剩下的在水面下。',
-        body: '你只管开口。记住、安排、执行、保管，Umbra 在你看不见的地方把事办完。电脑、手机、平板，都是它的手。',
+        body: `你只管开口。记住、安排、执行、保管，${B.productName}在你看不见的地方把事办完。电脑、手机、平板，都是它的手。`,
         cta: [
-          { href: '/download/', label: '下载 Umbra', primary: true },
+          { href: '/download/', label: `下载${B.productName}`, primary: true },
           { href: '#dive', label: '往下潜 ↓' },
         ],
       },
@@ -117,8 +120,8 @@ export const zh = {
         zone: '深渊层',
         eyebrow: '−4000 m · 深渊层 · 2 °C · 401 atm',
         title: '每台设备，连在同一张网上',
-        body: '手机上说，电脑上做。人不在电脑前，也能远程看见、操作它。能力用插件扩展；想自己做设计，还有跑在本机的 Umbra Studio。',
-        chips: ['多设备协同', '远程控制', '插件与主题', 'Umbra Studio'],
+        body: `手机上说，电脑上做。人不在电脑前，也能远程看见、操作它。能力用插件扩展；想自己做设计，还有跑在本机的${B.studioName}。`,
+        chips: ['多设备协同', '远程控制', '插件与主题', B.studioName],
         more: { href: '/features/devices/', label: '了解多设备与远程控制' },
       },
       {
@@ -138,7 +141,7 @@ export const zh = {
 
   features: {
     title: '功能',
-    lead: '对话只是水面。下面这些，是 Umbra 每天替你做的事。',
+    lead: `对话只是水面。下面这些，是${B.productName}每天替你做的事。`,
     moreLabel: '了解更多',
     shotPending: '截图整理中',
     related: '相关功能',
@@ -149,7 +152,7 @@ export const zh = {
         short: '交代一件事，它拆步骤、派设备、实时回报；到点的事自己醒来做。',
         eyebrow: '对话 · 任务 · 执勤表 · 提醒',
         title: '交代一件事，\n它分步做完。',
-        lead: '你用一句话说清楚要什么。Umbra 把它拆成步骤，挑合适的设备去做，每一步都告诉你进展到哪了。',
+        lead: `你用一句话说清楚要什么。${B.productName}把它拆成步骤，挑合适的设备去做，每一步都告诉你进展到哪了。`,
         shot: 'chat-task',
         phone: 'ios-2',
         chapters: [
@@ -238,7 +241,7 @@ export const zh = {
         short: '每台设备报上自己的能力，服务端按需派活。',
         eyebrow: '设备能力 · 派活 · 同步',
         title: '手机上说，\n电脑上做。',
-        lead: '每台设备都告诉 Umbra 自己能做什么：截图、读写文件、操作电脑、写代码。你在哪台设备上开口都行，活会派给能做的那台。',
+        lead: `每台设备都告诉${B.productName}自己能做什么：截图、读写文件、操作电脑、写代码。你在哪台设备上开口都行，活会派给能做的那台。`,
         shot: 'devices',
         phone: '',
         chapters: [
@@ -272,7 +275,7 @@ export const zh = {
   },
 
   download: {
-    title: '下载 Umbra',
+    title: `下载${B.productName}`,
     lead: '在你的每一台设备上装上它。账号通用，数据在设备之间同步。',
     detected: '你正在用',
     pending: '内测中',
@@ -285,7 +288,7 @@ export const zh = {
       { key: 'ios', name: 'iPhone 与 iPad', req: 'iOS 16 及以上', action: '在 App Store 获取' },
       { key: 'android', name: 'Android', req: 'Android 移植中', action: '下载 APK' },
     ],
-    studio: { title: '还想自己做设计？', body: 'Umbra Studio 是跑在你电脑上的设计软件，稿子存在本地。', link: '了解 Umbra Studio' },
+    studio: { title: '还想自己做设计？', body: `${B.studioName} 是跑在你电脑上的设计软件，稿子存在本地。`, link: `了解${B.studioName}` },
     contactTitle: '加入内测',
     contactBody: '内测名额有限。把你用的设备和想用它做什么发给我们：',
   },
@@ -311,7 +314,7 @@ export const zh = {
     credits: {
       title: '积分能买什么',
       items: [
-        { name: '插件', body: '在 Umbra Studio 的插件市场里买断，一次购买一直能用。' },
+        { name: '插件', body: `在${B.studioName} 的插件市场里买断，一次购买一直能用。` },
         { name: '额度重置卡', body: '额度用完了等不及重置，用一张马上回满。' },
         { name: '加量包', body: '这一周要多用一点，就加一点。' },
       ],
@@ -326,22 +329,23 @@ export const zh = {
   },
 
   studio: {
-    eyebrow: 'Umbra Studio',
+    eyebrow: B.studioName,
     title: '跑在你电脑上的\n设计软件。',
     lead: '创建和管理设计项目、编辑设计稿。最大的不同是：稿子存在你自己的电脑上。',
     shot: 'studio',
+    shotAlt: `${B.studioName} 界面`,
     points: [
       { title: '一份文件三种身份', body: '设计稿就是 .dc.html：它同时是设计稿、规范出处和能直接运行的原型。' },
       { title: '三种改法', body: '手动选中元素改，选中后让 AI 改，或者直接和 AI 说你要什么。' },
       { title: '也是一个 MCP 服务', body: '同一套能力暴露成本地 MCP，Claude Code、Codex 这类工具可以直接连上来改稿。' },
       { title: '插件市场', body: 'Markdown、代码、网页预览随软件一起；更多编辑器在插件市场里装。' },
     ],
-    cta: { href: '/download/', label: '下载 Umbra' },
+    cta: { href: '/download/', label: `下载${B.productName}` },
   },
 
   plugins: {
     title: '插件与主题',
-    lead: '插件给 Umbra Studio 加新的编辑器和工具；主题换掉 Umbra 三端的配色。在客户端的市场里安装或购买。',
+    lead: `插件给${B.studioName} 加新的编辑器和工具；主题换掉${B.productName}三端的配色。在客户端的市场里安装或购买。`,
     pluginsTitle: '插件',
     themesTitle: '主题',
     builtin: '随软件附带',
@@ -356,7 +360,7 @@ export const zh = {
 
   changelog: {
     title: '更新日志',
-    lead: 'Umbra 最近做了什么。按日期倒序，同一天跨好几个端的改动合在一起写。',
+    lead: `${B.productName}最近做了什么。按日期倒序，同一天跨好几个端的改动合在一起写。`,
   },
 
   help: {
@@ -395,11 +399,11 @@ export const zh = {
   },
 
   about: {
-    title: '关于 Umbra',
-    lead: 'Umbra 是拉丁语里「本影」的意思：光照不到的那一块。',
+    title: `关于${B.productName}`,
+    lead: `${B.productName}是一款私人 AI 助手。`,
     body: [
       '我们想做的是一个真正替你干活的助手。你在水面上说一句话，剩下的在水面下发生：拆任务、派设备、记下来、存好。你看不见它在忙，但它一直在。',
-      'Umbra 由一个很小的团队开发，服务端、电脑端、手机端和 Studio 都是自己写的。我们在意两件事：你的数据只用来帮你做事，以及能在本机做完的事尽量不上云。',
+      `${B.productName}由一个很小的团队开发，服务端、电脑端、手机端和 Studio 都是自己写的。我们在意两件事：你的数据只用来帮你做事，以及能在本机做完的事尽量不上云。`,
     ],
     contactTitle: '联系方式',
   },

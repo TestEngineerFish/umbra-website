@@ -1,16 +1,19 @@
 import { describe, expect, it } from 'vitest';
 import { normalizePlugins, normalizeThemes } from '../src/lib/plugins';
 import snapshot from '../src/data/plugins-snapshot.json';
+import { brand } from '../src/brand';
 
 describe('normalizePlugins', () => {
   it('离线清单三条内置插件都能读出来', () => {
     const list = normalizePlugins(snapshot);
     expect(list.map((x) => x.id)).toEqual(['com.umbra.markdown', 'com.umbra.code', 'com.umbra.html']);
     expect(list.every((x) => x.builtin)).toBe(true);
+    // 离线清单里官方作者写的是内部代号，页面上要显示对外品牌名
+    expect(list.every((x) => x.author === brand.productName)).toBe(true);
   });
   it('服务端回 builtin=1、缺字段也不炸', () => {
     const [p] = normalizePlugins({ plugins: [{ id: 'a', name: 'A', builtin: 1 }] });
-    expect(p).toMatchObject({ id: 'a', name: 'A', builtin: true, author: 'Umbra', price: 0, formats: [] });
+    expect(p).toMatchObject({ id: 'a', name: 'A', builtin: true, author: brand.productName, price: 0, formats: [] });
   });
   it('没 id / 没名字 / 负价格 / 非对象被处理掉', () => {
     const list = normalizePlugins({ plugins: [{ id: '', name: 'x' }, { id: 'b' }, null, 3, { id: 'c', name: 'C', price: -5 }] });
