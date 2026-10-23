@@ -28,7 +28,7 @@ export interface SkyOptions {
   perch?: HTMLElement;
   /** 测试 / 调试：强制某一档 */
   forceTier?: Tier;
-  /** 测量：把每帧绘制耗时（ms）记到 window.__skyPerf */
+  /** 测量：把每帧绘制耗时（ms）记到 window.__skyPerf，帧间隔记到 window.__skyGap */
   perf?: boolean;
 }
 
@@ -447,11 +447,12 @@ export function startSky(opt: SkyOptions): () => void {
 
   // ── 循环 ────────────────────────────────────────────────────────────────
 
-  const perfLog: number[] = [];
-  if (opt.perf) (window as unknown as { __skyPerf: number[] }).__skyPerf = perfLog;
+  const perfLog: number[] = [], gapLog: number[] = [];
+  if (opt.perf) Object.assign(window, { __skyPerf: perfLog, __skyGap: gapLog });
 
   let raf = 0, last = 0, frames = 0, slowSum = 0;
   function loop(now: number) {
+    if (opt.perf && last) gapLog.push(now - last);
     const dt = last ? Math.min(0.05, (now - last) / 1000) : 0.016;
     last = now;
     t += dt;

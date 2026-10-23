@@ -11,7 +11,8 @@ Umbra 的门户网站。首页是一次「下潜」：从日落海平面一路�
 npm install
 npm run dev        # http://localhost:4321
 npm run verify     # 类型检查 + 单测 + 构建 + 产物检查（链接 / 首页 JS 预算 / 截图大小 / 不许境外资源）
-npm run snap       # 先 build；用系统 Chrome 截全站（桌面 / 手机 × 亮 / 暗），输出 .shots-tmp/snap/
+npm run snap       # 先 build；用系统 Chrome 截全站（桌面 / 手机 × 亮 / 暗），首页天空每层一张，输出 .shots-tmp/snap/
+npm run perf       # 先 build；首页天空 mid 档、4× CPU 节流下量每帧绘制耗时，超过 16 ms 就失败（TIER=high 换档）
 ```
 
 ## 改东西去哪
