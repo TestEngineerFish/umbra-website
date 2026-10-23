@@ -1,10 +1,10 @@
 ---
-// 顶栏。variant=ocean：首页用，透明叠在日落海面上、白字；variant=page：其余页面，吸顶、毛玻璃底。
+// 顶栏。variant=sky：首页用，透明叠在天空上，字色跟当前层的浅深（html[data-ink]）；variant=page：其余页面，吸顶、毛玻璃底。
 // 手机上导航收进 <details>，不需要脚本。
 import { zh as t } from '../i18n/zh';
 import { site } from '../data/site';
 
-interface Props { variant?: 'ocean' | 'page'; current?: string }
+interface Props { variant?: 'sky' | 'page'; current?: string }
 const { variant = 'page', current = '' } = Astro.props;
 const loginHref = site.accountUrl || '/download/';
 ---
@@ -36,11 +36,15 @@ const loginHref = site.accountUrl || '/download/';
   .nav a:hover, .nav a[aria-current='page'] { color: var(--text); }
   .login { font-size: 13.5px; text-decoration: none; border: 1px solid var(--border); border-radius: 999px; padding: 6px 14px; }
   .login:hover { background: var(--hover); }
-  .ocean .mark, .ocean .login { color: #fff; }
-  .ocean .nav a { color: rgba(255, 255, 255, .8); }
-  .ocean .nav a:hover { color: #fff; }
-  .ocean .login { border-color: rgba(255, 255, 255, .42); }
-  .ocean .login:hover { background: rgba(255, 255, 255, .12); }
+  .sky .mark, .sky .login { color: #fff; }
+  .sky .nav a { color: rgba(255, 255, 255, .8); }
+  .sky .nav a:hover { color: #fff; }
+  .sky .login { border-color: rgba(255, 255, 255, .42); }
+  .sky .login:hover { background: rgba(255, 255, 255, .12); }
+  :global(html[data-ink='dark']) .sky .mark, :global(html[data-ink='dark']) .sky .login, :global(html[data-ink='dark']) .sky .menu summary { color: #16202c; }
+  :global(html[data-ink='dark']) .sky .nav a { color: rgba(22, 32, 44, .75); }
+  :global(html[data-ink='dark']) .sky .nav a:hover { color: #16202c; }
+  :global(html[data-ink='dark']) .sky .login { border-color: rgba(22, 32, 44, .3); }
 
   .menu { display: none; position: relative; }
   .menu summary { list-style: none; cursor: pointer; width: 40px; height: 40px; display: grid; place-content: center; gap: 6px; border-radius: 10px; }
@@ -49,7 +53,7 @@ const loginHref = site.accountUrl || '/download/';
   .menu nav { position: absolute; right: 0; top: 46px; min-width: 180px; display: flex; flex-direction: column; padding: 8px; border-radius: 14px; background: var(--card); color: var(--text); border: 1px solid var(--border); box-shadow: 0 8px 24px rgba(0, 0, 0, .13); }
   .menu nav a { padding: 10px 12px; border-radius: 8px; text-decoration: none; }
   .menu nav a:hover { background: var(--hover); }
-  .ocean .menu summary { color: #fff; }
+  .sky .menu summary { color: #fff; }
 
   @media (max-width: 760px) {
     .nav, .login { display: none; }

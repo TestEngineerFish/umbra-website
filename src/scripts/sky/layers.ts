@@ -32,7 +32,7 @@ export interface Layer {
 
 export const LAYERS: Layer[] = [
   { id: 'sky', cam: 0, sky: ['#04060e', '#0a0f25', '#141a3a'], ink: 'light', stars: 1, moon: 0, dawn: 0, fog: 0, draw: ['stars'] },
-  { id: 'stars', cam: 0.9, sky: ['#060917', '#0d1330', '#1b2150'], ink: 'light', stars: 1, moon: 0.3, dawn: 0, fog: 0, draw: ['stars'] },
+  { id: 'stars', cam: 0.9, sky: ['#060917', '#0d1330', '#1b2150'], ink: 'light', stars: 1, moon: 0, dawn: 0, fog: 0, draw: ['stars'] },
   { id: 'above-clouds', cam: 2.1, sky: ['#090f2c', '#172049', '#2d3466'], ink: 'light', stars: 0.75, moon: 1, dawn: 0, fog: 0, draw: ['stars', 'clouds'] },
   { id: 'in-clouds', cam: 3.3, sky: ['#2a2f52', '#4a4a6e', '#6e6684'], ink: 'light', stars: 0.2, moon: 0.4, dawn: 0.1, fog: 1, draw: ['clouds'] },
   { id: 'dawn', cam: 4.5, sky: ['#27315f', '#76668c', '#ee9a6c'], ink: 'light', stars: 0.12, moon: 0, dawn: 1, fog: 0, draw: ['stars', 'clouds', 'horizon'] },

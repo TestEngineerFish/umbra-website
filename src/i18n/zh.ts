@@ -137,8 +137,6 @@ export const zh = {
         more: { href: '/pricing/', label: '查看会员与积分' },
       },
     ],
-    // 画面最底下那张设备网上的节点名（画在 canvas 里）
-    netLabels: ['服务端', '手机', '平板', '电脑', 'Studio', '插件', '远程控制'],
     reducedNote: '你的系统设置了「减少动态效果」，这一页不播动画。',
   },
 

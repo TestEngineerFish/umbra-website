@@ -1,5 +1,5 @@
 // 视觉自检：起 astro preview，用系统 Chrome 截图（桌面 1440×900 + 手机 390×844），并收集控制台错误。
-// 首页按每一段的深度各截一张。输出到 .shots-tmp/snap/（不进仓）。
+// 首页按天空的每一层各截一张（最后一层要底边对齐视口底边，相机才落到枝头）。输出到 .shots-tmp/snap/（不进仓）。
 // 用法：npm run build && npm run snap   （CHROME=/path/to/chrome 可改浏览器路径）
 import { chromium } from 'playwright-core';
 import { spawn } from 'node:child_process';
@@ -32,11 +32,14 @@ for (const [tag, vp] of [['desk', { width: 1440, height: 900 }], ['phone', { wid
       if (p === '/') {
         const ids = await page.$$eval('.dive .sec', (els) => els.map((e) => e.id));
         for (const id of ids) {
-          await page.evaluate((i) => { const el = document.getElementById(i); scrollTo({ top: el.offsetTop + el.offsetHeight / 2 - innerHeight / 2, behavior: 'instant' }); }, id);
+          await page.evaluate(([i, end]) => {
+            const el = document.getElementById(i);
+            scrollTo({ top: end ? el.offsetTop + el.offsetHeight - innerHeight : el.offsetTop + el.offsetHeight / 2 - innerHeight / 2, behavior: 'instant' });
+          }, [id, id === ids[ids.length - 1]]);
           await page.waitForTimeout(1200);
           await page.screenshot({ path: `${OUT}${tag}-home-${id}.png` });
         }
-        // 两段之间（入水那一帧）
+        // 两段之间（星空往云海落的那一帧）
         await page.evaluate(() => scrollTo({ top: innerHeight * 0.55, behavior: 'instant' }));
         await page.waitForTimeout(1200);
         await page.screenshot({ path: `${OUT}${tag}-home-between.png` });
