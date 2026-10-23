@@ -17,6 +17,7 @@ import { buildKeys, camAt, clamp, activeIndex, lerp, type Key } from '../shared/
 import { LAYERS, drawerOn, hex, mix, progress, rgb, skyAt, weightAt, type Drawer } from './layers';
 import { pickTier, TIER_PARAMS, type Tier, type TierParams } from './tier';
 import { cloudPair, glowSprite, milkyWay, ridge, rng } from './textures';
+import { createGLClouds, type GLClouds } from './glclouds';
 
 export interface SkyOptions {
   canvas: HTMLCanvasElement;
@@ -79,6 +80,15 @@ export function startSky(opt: SkyOptions): () => void {
   let nextMeteor = 4;
   const milky = milkyWay(rng(11)), glow = glowSprite();
   const camOf: Record<string, number> = {};
+
+  // high 档先试 WebGL 云；起不来、上下文丢了、头 10 帧平均超过 20 ms，都当场回落到贴图云
+  let gl: GLClouds | null = P.clouds === 'gl' ? createGLClouds() : null;
+  let glFrames = 0, glSum = 0;
+  const glOn = () => !!gl && P.clouds === 'gl' && !gl.lost;
+  function dropGL() {
+    gl = null;
+    if (!decks.length) buildClouds();
+  }
 
   function buildClouds() {
     const r = rng(23), small = tier === 'low';
@@ -220,11 +230,25 @@ export function startSky(opt: SkyOptions): () => void {
   }
 
   function drawClouds(p: number) {
-    if (!decks.length || !wisp) return;
     const c = ctx!, top = placeY('deck');
     if (Number.isNaN(top)) return;
     const dawn = clamp(weightAt(LAYERS, p, 'dawn') * 1.4, 0, 1);
     const lit = mix(CLOUD_NIGHT[0], CLOUD_DAWN[0], dawn), shade = mix(CLOUD_NIGHT[1], CLOUD_DAWN[1], dawn);
+    if (gl && glOn()) {
+      const t0 = performance.now(), wy = placeY('wisp');
+      gl.render({
+        w: W, h: H, top, bottom: top + DECK * H, wisp: Number.isNaN(wy) ? -1e5 : wy, t: P.drift ? t : 0,
+        fog: weightAt(LAYERS, p, 'fog'), moon: weightAt(LAYERS, p, 'moon'), moonX: W * 0.78, lit, shade,
+      });
+      c.drawImage(gl.canvas, 0, 0, W, H);
+      if (glFrames < 10) {
+        glSum += performance.now() - t0;
+        if (++glFrames === 10 && glSum / 10 > 20) dropGL();
+      }
+      return;
+    }
+    if (gl && gl.lost) dropGL();
+    if (!decks.length || !wisp) return;
     const drift = P.drift ? t : 0, S0 = Math.max(W, 900) * 1.1;
     const bottom = top + DECK * H;
     // 云海主体：顶上几排起伏的云头，下面实心
@@ -432,6 +456,7 @@ export function startSky(opt: SkyOptions): () => void {
           tier = next; P = TIER_PARAMS[tier];
           root.dataset.skyTier = tier;
           build(); layout();
+          if (P.clouds !== 'gl') dropGL();
         }
       }
     }
@@ -460,7 +485,7 @@ export function startSky(opt: SkyOptions): () => void {
   const onLoad = () => { layout(); if (!P.animate) still(); };
 
   build();
-  buildClouds();
+  if (!gl) buildClouds();
   layout();
   addEventListener('resize', onResize);
   addEventListener('load', onLoad);
