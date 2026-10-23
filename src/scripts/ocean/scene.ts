@@ -10,7 +10,7 @@
 // - 标签页切到后台暂停循环；首帧耗时超标自动降档（tier.ts）。
 // - 系统「减少动态效果」→ 不跑循环，只在滚动时重画一帧。
 
-import { buildKeys, camAt, clamp, activeIndex, lerp, type Key } from './camera';
+import { buildKeys, camAt, clamp, activeIndex, lerp, type Key } from '../shared/camera';
 import { pickTier, TIER_PARAMS, type Tier, type TierParams } from './tier';
 
 /** 每段居中时相机深度（屏高）。改这里就是改「每段之间下潜多远」。 */
@@ -19,7 +19,6 @@ export const CAM_K = [0, 0.16, 1.7, 3.2, 4.7, 6.2, 7.35];
 export interface OceanOptions {
   canvas: HTMLCanvasElement;
   sections: HTMLElement[];
-  depths: number[];
   zones: string[];
   netLabels: string[];
   readout?: { zone: HTMLElement; ticks: HTMLElement[] };
@@ -134,7 +133,7 @@ export function startOcean(opt: OceanOptions): () => void {
     const docH = document.documentElement.scrollHeight;
     keys = buildKeys(
       sections.map((s) => ({ top: s.offsetTop, height: s.offsetHeight })),
-      H, docH, CAM_K, opt.depths,
+      H, docH, CAM_K,
     );
     WL = 0.6 * H;
     SB = CAM_K[6] * H + 0.7 * H;

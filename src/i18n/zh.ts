@@ -61,7 +61,6 @@ export const zh = {
     sections: [
       {
         id: 'surface',
-        depth: 0,
         zone: '开始',
         eyebrow: `${B.productName} · 私人 AI 助手`,
         title: '记一句话，\n理一段笔记，\n小事交给它。',
@@ -74,7 +73,6 @@ export const zh = {
       },
       {
         id: 'dive',
-        depth: 5,
         zone: '一件事',
         eyebrow: '从一句话开始',
         title: '你说一句话。\n它办完一整件事。',
@@ -88,7 +86,6 @@ export const zh = {
       },
       {
         id: 'photic',
-        depth: 30,
         zone: '任务',
         eyebrow: '任务 · 执勤表',
         title: '交代一件事，它分步做完',
@@ -98,7 +95,6 @@ export const zh = {
       },
       {
         id: 'twilight',
-        depth: 200,
         zone: '记忆',
         eyebrow: '记忆 · 知识库',
         title: '它记得，也读过',
@@ -108,7 +104,6 @@ export const zh = {
       },
       {
         id: 'midnight',
-        depth: 1000,
         zone: '保险箱',
         eyebrow: '密码保险箱',
         title: '密码交给它，钥匙在你手里',
@@ -118,7 +113,6 @@ export const zh = {
       },
       {
         id: 'abyss',
-        depth: 4000,
         zone: '多设备',
         eyebrow: '多设备 · 远程控制',
         title: '每台设备，连在同一张网上',
@@ -128,7 +122,6 @@ export const zh = {
       },
       {
         id: 'seabed',
-        depth: 4800,
         zone: '下载',
         eyebrow: '会员与下载',
         title: '装上它，\n从一件小事开始。',

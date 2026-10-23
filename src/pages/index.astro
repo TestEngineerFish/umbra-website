@@ -24,7 +24,7 @@ const middle = rest.slice(0, -1);
     </ol>
   </aside>
 
-  <div class="dive" data-depths={JSON.stringify(S.map((s) => s.depth))} data-zones={JSON.stringify(S.map((s) => s.zone))} data-net={JSON.stringify(t.home.netLabels)}>
+  <div class="dive" data-zones={JSON.stringify(S.map((s) => s.zone))} data-net={JSON.stringify(t.home.netLabels)}>
     <section class="sec hero" id={surface.id}>
       <div class="inner copy">
         <div class="eyebrow">{surface.eyebrow}</div>
@@ -85,7 +85,6 @@ const middle = rest.slice(0, -1);
   startOcean({
     canvas,
     sections: [...host.querySelectorAll<HTMLElement>('.sec')],
-    depths: JSON.parse(host.dataset.depths!),
     zones: JSON.parse(host.dataset.zones!),
     netLabels: JSON.parse(host.dataset.net!),
     readout: {
