@@ -10,7 +10,7 @@
 // - 标签页切到后台暂停循环；首帧耗时超标自动降档（tier.ts）。
 // - 系统「减少动态效果」→ 不跑循环，只在滚动时重画一帧。
 
-import { buildKeys, camAt, clamp, depthAt, activeIndex, formatDepth, lerp, type Key } from './camera';
+import { buildKeys, camAt, clamp, activeIndex, lerp, type Key } from './camera';
 import { pickTier, TIER_PARAMS, type Tier, type TierParams } from './tier';
 
 /** 每段居中时相机深度（屏高）。改这里就是改「每段之间下潜多远」。 */
@@ -22,7 +22,7 @@ export interface OceanOptions {
   depths: number[];
   zones: string[];
   netLabels: string[];
-  readout?: { depth: HTMLElement; zone: HTMLElement; ticks: HTMLElement[] };
+  readout?: { zone: HTMLElement; ticks: HTMLElement[] };
   /** 测试 / 调试：强制某一档 */
   forceTier?: Tier;
 }
@@ -438,7 +438,6 @@ export function startOcean(opt: OceanOptions): () => void {
   function hud() {
     const r = opt.readout;
     if (!r) return;
-    r.depth.textContent = formatDepth(depthAt(keys, scrollY));
     const on = activeIndex(keys, scrollY);
     if (on !== lastOn) {
       r.ticks.forEach((b, i) => b.toggleAttribute('aria-current', i === on));
