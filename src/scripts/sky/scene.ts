@@ -361,11 +361,15 @@ export function startSky(opt: SkyOptions): () => void {
 
   // ── branch：枝条与叶子 ──────────────────────────────────────────────────
 
-  /** 枝条几何：从右边伸进来。回枝条上 u（0 = 屏外根部，1 = 梢）处的点。 */
+  /**
+   * 枝条几何：从右边伸进来。回枝条上 u（0 = 屏外根部，1 = 梢）处的点。
+   * 宽屏右侧竖着一把刻度尺（视口中线上下约 150 px），枝条从它上方的右上角斜着垂下来，不从它身后穿过；
+   * 窄屏刻度尺只剩右上角一个读数格，枝条照旧从右边略低处伸进来。
+   */
   function branchAt(u: number, y0: number): [number, number] {
     const wide = W > 760;
     const x0 = W + 30, x1 = wide ? W * 0.56 : W * 0.34;
-    const yA = y0 + H * 0.07, yB = y0;
+    const yA = wide ? Math.min(y0 - H * 0.2, H * 0.5 - 190) : y0 + H * 0.07, yB = y0;
     const x = lerp(x0, x1, u), y = lerp(yA, yB, u) - Math.sin(u * Math.PI) * H * 0.035;
     return [x, y];
   }

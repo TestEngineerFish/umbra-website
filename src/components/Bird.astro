@@ -29,7 +29,8 @@ import { zh as t } from '../i18n/zh';
   .bird.on { opacity: 1; }
   /* 爪子在 viewBox 的 (58, 77)：整张图往左上挪，让爪子对上原点 */
   svg { position: absolute; left: calc(var(--bird-w) * -58 / 120); top: calc(var(--bird-w) * -77 / 120); width: var(--bird-w); height: auto; overflow: visible; }
-  .tag { position: absolute; left: calc(var(--bird-w) * 0.4); top: calc(var(--bird-w) * 0.08); white-space: nowrap; font-size: 11px; line-height: 1; padding: 4px 7px; border-radius: 999px; color: #2b3440; background: rgba(255, 255, 255, .7); }
+  /* 小字贴在鸟脚下、枝条下沿：宽屏枝条往左垂，小字放脚的右下；窄屏枝条往右垂，小字放脚的左下 */
+  .tag { position: absolute; left: 6px; top: 8px; white-space: nowrap; font-size: 11px; line-height: 1; padding: 4px 7px; border-radius: 999px; color: #2b3440; background: rgba(255, 255, 255, .7); }
 
   .tail { transform-origin: 74px 54px; animation: tail 3.6s ease-in-out infinite; }
   .head { transform-origin: 46px 44px; animation: head 7s ease-in-out infinite; }
@@ -39,6 +40,6 @@ import { zh as t } from '../i18n/zh';
   @keyframes head { 0%, 62%, 100% { transform: rotate(0deg); } 68%, 84% { transform: rotate(-9deg); } }
   @keyframes blink { 0%, 93%, 100% { transform: scaleY(1); } 95% { transform: scaleY(.1); } }
 
-  @media (max-width: 760px) { .bird { --bird-w: 80px; } }
+  @media (max-width: 760px) { .bird { --bird-w: 80px; } .tag { left: calc(var(--bird-w) * -0.3); top: 9px; } }
   @media (prefers-reduced-motion: reduce) { .tail, .head, .eye { animation: none; } .bird { transition: none; } }
 </style>
