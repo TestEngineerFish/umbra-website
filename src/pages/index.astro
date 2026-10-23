@@ -3,13 +3,11 @@
 // 第一帧就是完整的：canvas 没跑起来时，<html> 背景和 .sky 的 CSS 渐变先把日落海面铺出来，文字一直可读。
 import Base from '../layouts/Base.astro';
 import { zh as t } from '../i18n/zh';
-import { formatDepth } from '../scripts/ocean/camera';
 
 const S = t.home.sections;
 const [surface, dive, ...rest] = S;
 const seabed = S[S.length - 1];
 const middle = rest.slice(0, -1);
-const tickLabel = (i: number) => (i === S.length - 1 ? S[i].zone : formatDepth(S[i].depth));
 ---
 <Base ocean>
   <div class="sky" aria-hidden="true"></div>
@@ -17,12 +15,11 @@ const tickLabel = (i: number) => (i === S.length - 1 ? S[i].zone : formatDepth(S
 
   <aside class="gauge" aria-label={t.home.gaugeLabel}>
     <div class="read" aria-live="off">
-      <div class="m" id="depth">0 m</div>
       <div class="z" id="zone">{S[0].zone}</div>
     </div>
     <ol class="ruler">
       {S.map((s, i) => (
-        <li><a class="tick" href={`#${s.id}`} aria-label={`${t.home.gaugeJump}${s.zone}`} aria-current={i === 0 ? 'true' : undefined}>{tickLabel(i)}</a></li>
+        <li><a class="tick" href={`#${s.id}`} aria-label={`${t.home.gaugeJump}${s.zone}`} aria-current={i === 0 ? 'true' : undefined}>{s.zone}</a></li>
       ))}
     </ol>
   </aside>
@@ -92,7 +89,6 @@ const tickLabel = (i: number) => (i === S.length - 1 ? S[i].zone : formatDepth(S
     zones: JSON.parse(host.dataset.zones!),
     netLabels: JSON.parse(host.dataset.net!),
     readout: {
-      depth: document.getElementById('depth')!,
       zone: document.getElementById('zone')!,
       ticks: [...document.querySelectorAll<HTMLElement>('.tick')],
     },
@@ -143,11 +139,10 @@ const tickLabel = (i: number) => (i === S.length - 1 ? S[i].zone : formatDepth(S
   .dl b { font-size: 15px; font-weight: 600; }
   .dl em { font-style: normal; font-size: 12.5px; color: rgba(237, 234, 227, .62); }
 
-  /* 深度尺 */
+  /* 刻度尺（本页目录） */
   .gauge { position: fixed; z-index: 30; top: 50%; transform: translateY(-50%); right: max(18px, env(safe-area-inset-right, 0px)); width: 124px; display: flex; flex-direction: column; align-items: flex-end; gap: 14px; font-family: var(--font-mono); }
   .read { text-align: right; text-shadow: 0 1px 10px rgba(0, 0, 0, .5); background: rgba(21, 17, 14, .32); padding: 6px 10px; border-radius: 10px; backdrop-filter: blur(6px); -webkit-backdrop-filter: blur(6px); }
-  .read .m { font-size: 22px; font-weight: 500; color: #fff; font-variant-numeric: tabular-nums; white-space: nowrap; }
-  .read .z { font-family: var(--font-sans); font-size: 12px; color: #F0A878; margin-top: 2px; }
+  .read .z { font-family: var(--font-sans); font-size: 13px; color: #F0A878; }
   .ruler { position: relative; list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; align-items: flex-end; }
   .ruler::before { content: ''; position: absolute; right: 3px; top: 10px; bottom: 10px; width: 1px; background: rgba(255, 255, 255, .28); }
   .tick { display: flex; align-items: center; gap: 9px; height: 30px; font-size: 11px; color: rgba(255, 255, 255, .55); text-decoration: none; font-variant-numeric: tabular-nums; }
@@ -160,7 +155,6 @@ const tickLabel = (i: number) => (i === S.length - 1 ? S[i].zone : formatDepth(S
     .gauge { top: calc(var(--header-h) + 6px + env(safe-area-inset-top, 0px)); transform: none; width: auto; }
     .ruler { display: none; }
     .read { background: rgba(21, 17, 14, .45); padding: 6px 10px; border-radius: 10px; backdrop-filter: blur(6px); -webkit-backdrop-filter: blur(6px); }
-    .read .m { font-size: 15px; }
     .sec { padding-block: 13vh; }
   }
 </style>
