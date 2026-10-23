@@ -2,15 +2,15 @@
 // 用户看得见的品牌字样一律从这里取；仓库名、包名、路由、域名、环境变量、插件 id 等标识符不跟着改。
 
 const productName = '长尾雀';
-/** 英文名：还没定，先用拼音占位，不对外露出。 */
-const productNameEn = 'Changweique';
+/** 英文名（sam 10-23 定），读作 "kwe-tail"：que 是雀，tail 是尾巴。 */
+const productNameEn = 'Quetail';
 
 export const brand = {
   /** 对外产品名。 */
   productName,
-  /** 英文界面显示的产品名。英文名定下来之前也显示「长尾雀」；定了以后只改这一行，指向 productNameEn。 */
-  displayNameEn: productName,
-  /** 只用在必须是 ASCII、不能写中文的地方（每用一处都要在 PR 里列出）。目前官网没有用到。 */
+  /** 英文界面显示的产品名。 */
+  displayNameEn: productNameEn,
+  /** 英文名；英文界面读 displayNameEn，这里也给必须是 ASCII 的地方用。 */
   productNameEn,
   /** 昵称：先只进常量，页面上暂不使用。 */
   nickname: '雀雀',
