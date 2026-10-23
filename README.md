@@ -26,7 +26,7 @@ npm run perf       # 先 build；首页天空 mid 档、4× CPU 节流下量每�
 | 产品截图 | `public/shots/<名字>.webp`（名字见 zh.ts 里各功能的 `shot` / `phone`） |
 | 颜色 | **别手改** `src/styles/tokens.css`：设计包升版后 `npm run tokens` |
 | 首页天空场景 | `src/scripts/sky/scene.ts`（画）· `layers.ts`（分层表 LAYERS，段数只由它决定）· `textures.ts`（启动时生成的云 / 银河贴图）· `tier.ts`（设备分档）· `shared/camera.ts`（滚动 → 相机） |
-| 分享卡片 | `npm run build && node scripts/og.mjs` → `public/og.png` |
+| 分享卡片 | `npm run build && node scripts/og.mjs` → `public/og.jpg` |
 
 ## 部署
 
