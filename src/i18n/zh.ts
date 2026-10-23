@@ -55,12 +55,14 @@ export const zh = {
   },
 
   home: {
-    // 右侧刻度尺：海景画面先留着（等标志定稿后设计出新首页），刻度只写功能名，不再显示深度。
+    // 右侧刻度尺（本页目录）：刻度写功能名（zone），当前位置那一格写层名（layer），读屏念功能名。
+    // 各段 id 必须和 scripts/sky/layers.ts 的 LAYERS 一一对上。
     gaugeLabel: '本页目录',
     gaugeJump: '跳到',
     sections: [
       {
-        id: 'surface',
+        id: 'sky',
+        layer: '星空',
         zone: '开始',
         eyebrow: `${B.productName} · 私人 AI 助手`,
         title: '记一句话，\n理一段笔记，\n小事交给它。',
@@ -68,11 +70,12 @@ export const zh = {
         body: `${B.productName}是你的私人 AI 助手。它记得你说过的话、整理你的笔记、跑掉那些重复的小事；保险箱不登录也能用，在你的设备上加密，服务器上只存它解不开的密文。像一只停在枝头的小鸟，你叫它它就在，不叫它它就安静待着，有结果才来找你。`,
         cta: [
           { href: '/download/', label: `下载${B.productName}`, primary: true },
-          { href: '#dive', label: '看它做什么 ↓' },
+          { href: '#stars', label: '看它做什么 ↓' },
         ],
       },
       {
-        id: 'dive',
+        id: 'stars',
+        layer: '流星',
         zone: '一件事',
         eyebrow: '从一句话开始',
         title: '你说一句话。\n它办完一整件事。',
@@ -85,7 +88,8 @@ export const zh = {
         ],
       },
       {
-        id: 'photic',
+        id: 'above-clouds',
+        layer: '云海',
         zone: '任务',
         eyebrow: '任务 · 执勤表',
         title: '交代一件事，它分步做完',
@@ -94,7 +98,8 @@ export const zh = {
         more: { href: '/features/tasks/', label: '了解任务与执勤表' },
       },
       {
-        id: 'twilight',
+        id: 'in-clouds',
+        layer: '穿云',
         zone: '记忆',
         eyebrow: '记忆 · 知识库',
         title: '它记得，也读过',
@@ -103,7 +108,8 @@ export const zh = {
         more: { href: '/features/memory/', label: '了解记忆与知识库' },
       },
       {
-        id: 'midnight',
+        id: 'dawn',
+        layer: '黎明',
         zone: '保险箱',
         eyebrow: '密码保险箱',
         title: '密码交给它，钥匙在你手里',
@@ -112,7 +118,8 @@ export const zh = {
         more: { href: '/features/vault/', label: '了解保险箱' },
       },
       {
-        id: 'abyss',
+        id: 'treetops',
+        layer: '林梢',
         zone: '多设备',
         eyebrow: '多设备 · 远程控制',
         title: '每台设备，连在同一张网上',
@@ -121,7 +128,8 @@ export const zh = {
         more: { href: '/features/devices/', label: '了解多设备与远程控制' },
       },
       {
-        id: 'seabed',
+        id: 'branch',
+        layer: '枝头',
         zone: '下载',
         eyebrow: '会员与下载',
         title: '装上它，\n从一件小事开始。',
