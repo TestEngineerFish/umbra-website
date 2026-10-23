@@ -137,6 +137,8 @@ export const zh = {
         more: { href: '/pricing/', label: '查看会员与积分' },
       },
     ],
+    // 最后一屏枝头那只鸟是占位，形象定稿后整件替换
+    birdPending: '形象设计中',
     reducedNote: '你的系统设置了「减少动态效果」，这一页不播动画。',
   },
 

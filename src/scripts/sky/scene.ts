@@ -24,6 +24,8 @@ export interface SkyOptions {
   sections: HTMLElement[];
   /** 刻度尺：读数格写层名，刻度高亮当前段。 */
   readout?: { zone: HTMLElement; names: string[]; ticks: HTMLElement[] };
+  /** 停在枝头的鸟（Bird.astro）：每帧把它的 transform 对到落脚点，枝条不在屏上时藏起来 */
+  perch?: HTMLElement;
   /** 测试 / 调试：强制某一档 */
   forceTier?: Tier;
   /** 测量：把每帧绘制耗时（ms）记到 window.__skyPerf */
@@ -368,8 +370,8 @@ export function startSky(opt: SkyOptions): () => void {
     return [x, y];
   }
 
-  /** 鸟落脚的点（屏幕坐标），给 Bird 组件对位用。 */
-  let perch: [number, number] = [0, 0];
+  /** 鸟落脚的点（屏幕坐标），给 Bird 组件对位用；枝条这一帧没画就是 null。 */
+  let perch: [number, number] | null = null;
 
   function drawBranch() {
     const y0 = placeY(W > 760 ? 'branch' : 'branchNarrow');
@@ -398,10 +400,24 @@ export function startSky(opt: SkyOptions): () => void {
       c.beginPath(); c.moveTo(0, 0); c.quadraticCurveTo(len * 0.5, -len * 0.32, len, 0); c.quadraticCurveTo(len * 0.5, len * 0.32, 0, 0); c.fill();
       c.restore();
     }
-    perch = branchAt(0.72, y0);
+    // 落脚点取主枝上沿（中线往上半个枝粗）
+    const [px, py] = branchAt(0.72, y0);
+    perch = [px, py - lerp(12, 1.6, 0.72) * k * 0.5];
+  }
+
+  let birdKey = '';
+  function placeBird() {
+    const el = opt.perch;
+    if (!el) return;
+    const key = perch ? `${Math.round(perch[0] * 2) / 2},${Math.round(perch[1] * 2) / 2}` : '';
+    if (key === birdKey) return;
+    birdKey = key;
+    el.classList.toggle('on', !!perch);
+    if (perch) el.style.transform = `translate3d(${perch[0].toFixed(1)}px,${perch[1].toFixed(1)}px,0)`;
   }
 
   function frame() {
+    perch = null;
     const p = progress(LAYERS, camCur / H);
     const c = ctx!, sky = skyAt(LAYERS, p);
     const g = c.createLinearGradient(0, 0, 0, H);
@@ -412,6 +428,7 @@ export function startSky(opt: SkyOptions): () => void {
     if (on('horizon')) drawHorizon(p, sky);
     if (on('clouds')) drawClouds(p);
     if (on('branch')) drawBranch();
+    placeBird();
   }
 
   // ── 刻度尺与浅深字 ──────────────────────────────────────────────────────

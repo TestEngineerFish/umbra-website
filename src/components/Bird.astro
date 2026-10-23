@@ -1,0 +1,44 @@
+---
+// 首页最后一屏停在枝头的长尾雀 —— 第一期占位（方案 §五）：简单剪影 + 「形象设计中」，只做眨眼、尾巴轻摆、偏头三个小动作。
+// 形象定稿后整件替换这个组件；「飞来落枝」入场动画到那时再做。
+//
+// 鸟不画进 canvas：它是钉在视口上的一个 HTML 元素，天空场景（scripts/sky/scene.ts）每帧把它的 transform 对到枝条上的落脚点，
+// 所以滚动时鸟和枝条不会错位。元素原点就是鸟爪，下面的 SVG 往左上偏移、让爪子落在原点上。
+// 颜色写死在这里：它属于首页天空场景，不跟明暗主题（同 index.astro / layers.ts）。
+import { zh as t } from '../i18n/zh';
+---
+<div class="bird" id="bird" aria-hidden="true">
+  <svg viewBox="0 0 120 80" width="120" height="80">
+    <g class="tail"><path d="M74 50 L117 66 L114 73 L72 58 Z" fill="#4a3530" /></g>
+    <line x1="54" y1="62" x2="53" y2="77" stroke="#4a3530" stroke-width="1.8" stroke-linecap="round" />
+    <line x1="62" y1="62" x2="63" y2="77" stroke="#4a3530" stroke-width="1.8" stroke-linecap="round" />
+    <ellipse cx="58" cy="50" rx="22" ry="15" fill="#9a5f55" />
+    <ellipse cx="50" cy="55" rx="13" ry="9.5" fill="#d9928a" />
+    <path d="M52 44 Q70 39 82 52 Q68 58 54 54 Z" fill="#4a3530" />
+    <g class="head">
+      <circle cx="41" cy="35" r="12" fill="#9a5f55" />
+      <path d="M30 34 L22 36.5 L30 39 Z" fill="#4a3530" />
+      <ellipse class="eye" cx="36" cy="32.5" rx="2.2" ry="2.2" fill="#1d1513" />
+    </g>
+  </svg>
+  <span class="tag">{t.home.birdPending}</span>
+</div>
+
+<style>
+  .bird { --bird-w: 104px; position: fixed; left: 0; top: 0; z-index: 0; pointer-events: none; opacity: 0; transition: opacity .3s; will-change: transform; }
+  .bird.on { opacity: 1; }
+  /* 爪子在 viewBox 的 (58, 77)：整张图往左上挪，让爪子对上原点 */
+  svg { position: absolute; left: calc(var(--bird-w) * -58 / 120); top: calc(var(--bird-w) * -77 / 120); width: var(--bird-w); height: auto; overflow: visible; }
+  .tag { position: absolute; left: calc(var(--bird-w) * 0.4); top: calc(var(--bird-w) * 0.08); white-space: nowrap; font-size: 11px; line-height: 1; padding: 4px 7px; border-radius: 999px; color: #2b3440; background: rgba(255, 255, 255, .7); }
+
+  .tail { transform-origin: 74px 54px; animation: tail 3.6s ease-in-out infinite; }
+  .head { transform-origin: 46px 44px; animation: head 7s ease-in-out infinite; }
+  .eye { transform-origin: 36px 32.5px; animation: blink 5s infinite; }
+  @keyframes tail { 0%, 100% { transform: rotate(0deg); } 50% { transform: rotate(-5deg); } }
+  /* 偶尔偏一下头，偏向读者 */
+  @keyframes head { 0%, 62%, 100% { transform: rotate(0deg); } 68%, 84% { transform: rotate(-9deg); } }
+  @keyframes blink { 0%, 93%, 100% { transform: scaleY(1); } 95% { transform: scaleY(.1); } }
+
+  @media (max-width: 760px) { .bird { --bird-w: 80px; } }
+  @media (prefers-reduced-motion: reduce) { .tail, .head, .eye { animation: none; } .bird { transition: none; } }
+</style>

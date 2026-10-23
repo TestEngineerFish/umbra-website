@@ -3,6 +3,7 @@
 // 第一帧就是完整的：canvas 没跑起来时，<html> 背景和 .backdrop 的 CSS 渐变先把夜空铺出来，文字一直可读。
 // 每段的浅深字（data-ink）取自 LAYERS：天亮以后的两层用深字。
 import Base from '../layouts/Base.astro';
+import Bird from '../components/Bird.astro';
 import { zh as t } from '../i18n/zh';
 import { LAYERS } from '../scripts/sky/layers';
 
@@ -15,6 +16,7 @@ const middle = rest.slice(0, -1);
 <Base sky>
   <div class="backdrop" aria-hidden="true"></div>
   <canvas id="sky-canvas" aria-hidden="true"></canvas>
+  <Bird />
 
   <aside class="gauge" aria-label={t.home.gaugeLabel}>
     <div class="read" aria-live="off">
@@ -97,6 +99,7 @@ const middle = rest.slice(0, -1);
       names: JSON.parse(host.dataset.names!),
       ticks: [...document.querySelectorAll<HTMLElement>('.tick')],
     },
+    perch: document.getElementById('bird') ?? undefined,
     forceTier: forced && ['high', 'mid', 'low', 'static'].includes(forced) ? (forced as Tier) : undefined,
     perf: q.has('perf'),
   });
