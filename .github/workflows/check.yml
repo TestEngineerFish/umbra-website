@@ -1,6 +1,5 @@
 # 推送时只做校验（类型检查 + 单测 + 构建 + 产物检查），不部署 —— 上线前再加部署那一步。
-# 跑在 sam 那台 Mac 上的自建 runner（10-23 定：GitHub 免费分钟数用完了），标签 umbra-mac。
-# 仓库是公开的：只在 push / 手动触发时跑，不加 pull_request，免得外部 fork 的 PR 在这台机器上执行代码。
+# 用 GitHub 托管的 runner：公开仓不计分钟数。别换成自建 runner —— 公开仓挂自建 runner，外部代码可能在那台机器上执行。
 name: check
 on:
   push:
@@ -11,7 +10,7 @@ concurrency:
   cancel-in-progress: true
 jobs:
   verify:
-    runs-on: [self-hosted, umbra-mac]
+    runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
