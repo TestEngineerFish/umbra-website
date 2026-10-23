@@ -1,6 +1,6 @@
 ---
 // 全站外壳：head（标题、描述、OG、canonical）+ 顶栏 + 正文 + 页脚。
-// ocean=true 是首页：深色海洋世界、不跟明暗主题、顶栏透明。
+// sky=true 是首页：从星空落到枝头的天空场景，不跟明暗主题、顶栏透明。
 import '../styles/global.css';
 import Header from '../components/Header.astro';
 import Footer from '../components/Footer.astro';
@@ -9,16 +9,16 @@ import { zh as t } from '../i18n/zh';
 interface Props {
   title?: string;
   description?: string;
-  ocean?: boolean;
+  sky?: boolean;
   current?: string;
 }
-const { title, description = t.site.description, ocean = false, current = '' } = Astro.props;
+const { title, description = t.site.description, sky = false, current = '' } = Astro.props;
 const fullTitle = title ? `${title} · ${t.brand}` : t.site.title;
 const canonical = new URL(Astro.url.pathname, Astro.site);
-const variant = ocean ? 'ocean' : 'page';
+const variant = sky ? 'sky' : 'page';
 ---
 <!doctype html>
-<html lang={t.lang} class:list={{ ocean }}>
+<html lang={t.lang} class:list={{ sky }} data-ink={sky ? 'light' : undefined}>
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
@@ -26,7 +26,7 @@ const variant = ocean ? 'ocean' : 'page';
     <meta name="description" content={description} />
     <link rel="canonical" href={canonical} />
     <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
-    <meta name="theme-color" content={ocean ? '#24182f' : '#F6F5F2'} />
+    <meta name="theme-color" content={sky ? '#04060e' : '#F6F5F2'} />
     <meta property="og:type" content="website" />
     <meta property="og:site_name" content={t.brand} />
     <meta property="og:title" content={fullTitle} />
@@ -44,7 +44,7 @@ const variant = ocean ? 'ocean' : 'page';
 </html>
 
 <style is:global>
-  /* 首页：单一的深色海洋世界，显式给出颜色，不随明暗主题切换 */
-  html.ocean { color-scheme: dark; background: #15110E; }
-  body.ocean { background: #15110E; color: #EDEAE3; }
+  /* 首页：天空场景显式给出颜色，不随明暗主题切换（颜色表在 scripts/sky/layers.ts） */
+  html.sky { color-scheme: dark; background: #04060e; }
+  body.sky { background: transparent; color: #EDEAE3; }
 </style>

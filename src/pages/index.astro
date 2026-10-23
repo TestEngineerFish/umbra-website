@@ -1,21 +1,26 @@
 ---
-// 首页：一次下潜（草案 §三）。七段内容走正常文档流；背后一张钉住的 canvas 按滚动画海（scripts/ocean/scene.ts）。
-// 第一帧就是完整的：canvas 没跑起来时，<html> 背景和 .sky 的 CSS 渐变先把日落海面铺出来，文字一直可读。
+// 首页：从星空落到枝头（方案 ../doc/官网首页-星空到枝头-方案.md）。七段内容走正常文档流；背后一张钉住的 canvas 按滚动画天空（scripts/sky/scene.ts）。
+// 第一帧就是完整的：canvas 没跑起来时，<html> 背景和 .backdrop 的 CSS 渐变先把夜空铺出来，文字一直可读。
+// 每段的浅深字（data-ink）取自 LAYERS：天亮以后的两层用深字。
 import Base from '../layouts/Base.astro';
+import Bird from '../components/Bird.astro';
 import { zh as t } from '../i18n/zh';
+import { LAYERS } from '../scripts/sky/layers';
 
 const S = t.home.sections;
-const [surface, dive, ...rest] = S;
-const seabed = S[S.length - 1];
+const ink = (id: string) => LAYERS.find((l) => l.id === id)?.ink ?? 'light';
+const [first, dive, ...rest] = S;
+const last = S[S.length - 1];
 const middle = rest.slice(0, -1);
 ---
-<Base ocean>
-  <div class="sky" aria-hidden="true"></div>
-  <canvas id="sea" aria-hidden="true"></canvas>
+<Base sky>
+  <div class="backdrop" aria-hidden="true"></div>
+  <canvas id="sky-canvas" aria-hidden="true"></canvas>
+  <Bird />
 
   <aside class="gauge" aria-label={t.home.gaugeLabel}>
     <div class="read" aria-live="off">
-      <div class="z" id="zone">{S[0].zone}</div>
+      <div class="z" id="zone">{S[0].layer}</div>
     </div>
     <ol class="ruler">
       {S.map((s, i) => (
@@ -24,19 +29,19 @@ const middle = rest.slice(0, -1);
     </ol>
   </aside>
 
-  <div class="dive" data-depths={JSON.stringify(S.map((s) => s.depth))} data-zones={JSON.stringify(S.map((s) => s.zone))} data-net={JSON.stringify(t.home.netLabels)}>
-    <section class="sec hero" id={surface.id}>
+  <div class="dive" data-names={JSON.stringify(S.map((s) => s.layer))}>
+    <section class="sec hero" id={first.id} data-ink={ink(first.id)}>
       <div class="inner copy">
-        <div class="eyebrow">{surface.eyebrow}</div>
-        <h1 class="pre-line">{surface.title}</h1>
-        <p class="body hero-lead">{surface.body}</p>
+        <div class="eyebrow">{first.eyebrow}</div>
+        <h1 class="pre-line">{first.title}</h1>
+        <p class="body hero-lead">{first.body}</p>
         <div class="cta">
-          {surface.cta?.map((c) => <a class:list={['btn', c.primary ? 'btn-primary glow' : 'btn-glass']} href={c.href}>{c.label}</a>)}
+          {first.cta?.map((c) => <a class:list={['btn', c.primary ? 'btn-primary glow' : 'btn-glass']} href={c.href}>{c.label}</a>)}
         </div>
       </div>
     </section>
 
-    <section class="sec split" id={dive.id}>
+    <section class="sec split" id={dive.id} data-ink={ink(dive.id)}>
       <div class="inner">
         <div class="say"><small>{dive.say?.who}</small>{dive.say?.text}</div>
       </div>
@@ -50,7 +55,7 @@ const middle = rest.slice(0, -1);
     </section>
 
     {middle.map((s) => (
-      <section class="sec" id={s.id}>
+      <section class="sec" id={s.id} data-ink={ink(s.id)}>
         <div class="inner copy">
           <div class="eyebrow">{s.eyebrow}</div>
           <h2>{s.title}</h2>
@@ -61,46 +66,51 @@ const middle = rest.slice(0, -1);
       </section>
     ))}
 
-    <section class="sec floor" id={seabed.id}>
+    <section class="sec floor" id={last.id} data-ink={ink(last.id)}>
       <div class="inner copy wide">
-        <div class="eyebrow">{seabed.eyebrow}</div>
-        <h2 class="pre-line">{seabed.title}</h2>
-        <p class="body">{seabed.body}</p>
+        <div class="eyebrow">{last.eyebrow}</div>
+        <h2 class="pre-line">{last.title}</h2>
+        <p class="body">{last.body}</p>
         <div class="dl">
           {t.download.items.map((d) => (
             <a href="/download/" class:list={[{ off: d.key === 'android' }]}><b>{d.name}</b><em>{d.key === 'android' ? t.download.soon : d.req}</em></a>
           ))}
         </div>
-        {seabed.more && <a class="more" href={seabed.more.href}>{seabed.more.label} →</a>}
+        {last.more && <a class="more" href={last.more.href}>{last.more.label} →</a>}
       </div>
     </section>
   </div>
 </Base>
 
 <script>
-  import { startOcean } from '../scripts/ocean/scene';
+  import { startSky } from '../scripts/sky/scene';
+  import type { Tier } from '../scripts/sky/tier';
 
   const host = document.querySelector<HTMLElement>('.dive')!;
-  const canvas = document.getElementById('sea') as HTMLCanvasElement;
-  startOcean({
+  const canvas = document.getElementById('sky-canvas') as HTMLCanvasElement;
+  // ?tier=mid 强制某一档、?perf 记录每帧耗时：只给 snap / perf 脚本用
+  const q = new URLSearchParams(location.search);
+  const forced = q.get('tier');
+  startSky({
     canvas,
     sections: [...host.querySelectorAll<HTMLElement>('.sec')],
-    depths: JSON.parse(host.dataset.depths!),
-    zones: JSON.parse(host.dataset.zones!),
-    netLabels: JSON.parse(host.dataset.net!),
     readout: {
       zone: document.getElementById('zone')!,
+      names: JSON.parse(host.dataset.names!),
       ticks: [...document.querySelectorAll<HTMLElement>('.tick')],
     },
+    perch: document.getElementById('bird') ?? undefined,
+    forceTier: forced && ['high', 'mid', 'low', 'static'].includes(forced) ? (forced as Tier) : undefined,
+    perf: q.has('perf'),
   });
   canvas.classList.add('on');
 </script>
 
 <style>
-  /* canvas 起来之前的兜底画面：日落天空 + 海面，和 canvas 第一帧同色 */
-  .sky { position: fixed; inset: 0; z-index: 0; background: linear-gradient(#24182f 0%, #5b2338 18%, #b8461d 34%, #ec7a32 48%, #f9c08a 59.9%, #3b3352 60%, #1b3a55 72%, #123a52 100%); }
-  #sea { position: fixed; inset: 0; width: 100%; height: 100%; display: block; z-index: 0; opacity: 0; transition: opacity .4s; }
-  #sea.on { opacity: 1; }
+  /* canvas 起来之前的兜底画面：深夜星空的天色，和 canvas 第一帧同色（LAYERS[0].sky） */
+  .backdrop { position: fixed; inset: 0; z-index: 0; background: linear-gradient(#04060e 0%, #0a0f25 55%, #141a3a 100%); }
+  #sky-canvas { position: fixed; inset: 0; width: 100%; height: 100%; display: block; z-index: 0; opacity: 0; transition: opacity .4s; }
+  #sky-canvas.on { opacity: 1; }
   .dive { position: relative; z-index: 1; --gauge-w: 150px; }
 
   .sec { min-height: 100svh; display: flex; flex-direction: column; justify-content: center; padding-block: 16vh; padding-left: var(--gutter); padding-right: var(--gutter-r); }
@@ -139,6 +149,16 @@ const middle = rest.slice(0, -1);
   .dl b { font-size: 15px; font-weight: 600; }
   .dl em { font-style: normal; font-size: 12.5px; color: rgba(237, 234, 227, .62); }
 
+  /* 天亮以后的层：深字（色值待设计侧裁） */
+  [data-ink='dark'] .copy { text-shadow: 0 1px 16px rgba(255, 255, 255, .45); }
+  [data-ink='dark'] h2 { color: #16202c; }
+  [data-ink='dark'] .eyebrow, [data-ink='dark'] .more { color: #a3420c; }
+  [data-ink='dark'] .body { color: rgba(22, 32, 44, .78); }
+  [data-ink='dark'] .chips li { border-color: rgba(22, 32, 44, .2); background: rgba(255, 255, 255, .35); color: #16202c; }
+  [data-ink='dark'] .dl a { color: #16202c; background: rgba(255, 255, 255, .45); border-color: rgba(22, 32, 44, .14); }
+  [data-ink='dark'] .dl a:hover { background: rgba(255, 255, 255, .7); border-color: #E8590C; }
+  [data-ink='dark'] .dl em { color: rgba(22, 32, 44, .62); }
+
   /* 刻度尺（本页目录） */
   .gauge { position: fixed; z-index: 30; top: 50%; transform: translateY(-50%); right: max(18px, env(safe-area-inset-right, 0px)); width: 124px; display: flex; flex-direction: column; align-items: flex-end; gap: 14px; font-family: var(--font-mono); }
   .read { text-align: right; text-shadow: 0 1px 10px rgba(0, 0, 0, .5); background: rgba(21, 17, 14, .32); padding: 6px 10px; border-radius: 10px; backdrop-filter: blur(6px); -webkit-backdrop-filter: blur(6px); }
@@ -149,17 +169,23 @@ const middle = rest.slice(0, -1);
   .tick::after { content: ''; width: 7px; height: 7px; border-radius: 50%; background: rgba(255, 255, 255, .35); }
   .tick:hover, .tick[aria-current] { color: #fff; }
   .tick[aria-current]::after { background: #E8590C; box-shadow: 0 0 0 3px rgba(232, 89, 12, .3); }
+  :global(html[data-ink='dark']) .read { background: rgba(255, 255, 255, .45); text-shadow: none; }
+  :global(html[data-ink='dark']) .read .z { color: #a3420c; }
+  :global(html[data-ink='dark']) .ruler::before { background: rgba(22, 32, 44, .25); }
+  :global(html[data-ink='dark']) .tick { color: rgba(22, 32, 44, .55); }
+  :global(html[data-ink='dark']) .tick:hover, :global(html[data-ink='dark']) .tick[aria-current] { color: #16202c; }
+  :global(html[data-ink='dark']) .tick::after { background: rgba(22, 32, 44, .3); }
 
   @media (max-width: 760px) {
     .dive { --gauge-w: 0px; }
     .gauge { top: calc(var(--header-h) + 6px + env(safe-area-inset-top, 0px)); transform: none; width: auto; }
     .ruler { display: none; }
-    .read { background: rgba(21, 17, 14, .45); padding: 6px 10px; border-radius: 10px; backdrop-filter: blur(6px); -webkit-backdrop-filter: blur(6px); }
+    :global(html:not([data-ink='dark'])) .read { background: rgba(21, 17, 14, .45); padding: 6px 10px; border-radius: 10px; backdrop-filter: blur(6px); -webkit-backdrop-filter: blur(6px); }
     .sec { padding-block: 13vh; }
   }
 </style>
 
 <style is:global>
-  html.ocean { scroll-behavior: smooth; }
-  @media (prefers-reduced-motion: reduce) { html.ocean { scroll-behavior: auto; } }
+  html.sky { scroll-behavior: smooth; }
+  @media (prefers-reduced-motion: reduce) { html.sky { scroll-behavior: auto; } }
 </style>

@@ -3,7 +3,7 @@
 import { zh as t } from '../i18n/zh';
 import { site } from '../data/site';
 
-interface Props { variant?: 'ocean' | 'page' }
+interface Props { variant?: 'sky' | 'page' }
 const { variant = 'page' } = Astro.props;
 ---
 <footer class:list={['ft', variant]}>
@@ -27,14 +27,15 @@ const { variant = 'page' } = Astro.props;
 
 <style>
   .ft { border-top: 1px solid var(--border-soft); padding-block: 48px 36px; font-size: 13.5px; color: var(--muted); background: var(--bg); }
-  .ft.ocean { position: relative; z-index: 1; border-top-color: rgba(240, 168, 120, .14); background: transparent; color: rgba(237, 234, 227, .55); }
+  /* 首页页脚落在最后一层（天亮的枝头）上，用深字 */
+  .ft.sky { position: relative; z-index: 1; border-top-color: rgba(22, 32, 44, .14); background: transparent; color: rgba(22, 32, 44, .66); }
   .ft-in { display: flex; flex-direction: column; gap: 32px; }
   .groups { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 24px; }
   .group h2 { font-size: 12px; font-weight: 600; letter-spacing: .06em; color: var(--faint); margin-bottom: 10px; }
-  .ocean .group h2 { color: rgba(237, 234, 227, .4); }
+  .sky .group h2 { color: rgba(22, 32, 44, .5); }
   ul { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 6px; }
   a { text-decoration: none; }
   a:hover { color: var(--text); }
-  .ocean a:hover { color: #fff; }
+  .sky a:hover { color: #16202c; }
   .legal { display: flex; flex-wrap: wrap; gap: 8px 22px; font-size: 12.5px; }
 </style>
