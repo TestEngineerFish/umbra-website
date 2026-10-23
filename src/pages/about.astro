@@ -2,13 +2,21 @@
 import Base from '../layouts/Base.astro';
 import { zh as t } from '../i18n/zh';
 import { site } from '../data/site';
+import { shotUrl } from '../lib/shots';
 
 const A = t.about;
+// 真鸟照片：没有授权前不放图，画占位框（public/shots/rosefinch.webp 放进来就自动换成图）。
+const photo = shotUrl('rosefinch');
 ---
 <Base title={A.title} description={A.lead} current="/about/">
   <article class="wrap page-head prose">
     <h1>{A.title}</h1>
     <p class="lead">{A.lead}</p>
+    <figure class="photo">
+      {photo
+        ? <img src={photo} alt={A.photoAlt} loading="lazy" decoding="async" width="1200" height="800" />
+        : <div class="ph"><span>{A.photoPending}</span></div>}
+    </figure>
     {A.body.map((p) => <p>{p}</p>)}
     <h2>{A.contactTitle}</h2>
     <p class="mail">{site.contactEmail || '【联系邮箱待填】'}</p>
@@ -19,5 +27,10 @@ const A = t.about;
   .prose { max-width: 46rem; padding-bottom: 12vh; }
   .prose p { font-size: 17px; line-height: 1.85; }
   .prose h2 { font-size: 22px; margin-top: 3vh; }
+  .photo { margin: 3vh 0; }
+  .photo img, .photo .ph { width: 100%; aspect-ratio: 3 / 2; border-radius: 12px; }
+  .photo img { height: auto; object-fit: cover; }
+  .photo .ph { display: grid; place-items: center; border: 1px solid var(--border); background: var(--rail); }
+  .photo .ph span { font-size: 13px; color: var(--faint); font-family: var(--font-mono); }
   .mail { font-family: var(--font-mono); user-select: all; }
 </style>
